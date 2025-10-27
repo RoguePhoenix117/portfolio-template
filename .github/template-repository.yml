@@ -1,0 +1,16 @@
+# Template repository configuration
+# This file helps GitHub understand this is a template repository
+
+name: Portfolio Website Template
+description: A modern, responsive portfolio website template built with Next.js 14, TypeScript, and Tailwind CSS
+topics:
+  - portfolio
+  - template
+  - nextjs
+  - typescript
+  - tailwindcss
+  - blog
+  - developer
+  - personal-website
+  - react
+  - markdown
