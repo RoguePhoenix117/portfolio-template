@@ -23,11 +23,12 @@
     "url": "https://github.com/yourusername/portfolio-template/issues"
   },
   "scripts": {
-    "dev": "next dev",
+    "dev": "next dev -p 3001",
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "setup": "node scripts/setup-template.js"
+    "setup": "node scripts/setup-template.js",
+    "update-package": "node scripts/update-package-json.js"
   },
   "dependencies": {
     "@mdx-js/loader": "^3.1.1",

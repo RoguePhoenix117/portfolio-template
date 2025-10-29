@@ -1,3 +1,4 @@
+import BlogWrapper from '@/components/BlogWrapper';
 import { getAllCategories, getAllPosts, getFeaturedPosts } from '@/lib/blog';
 import { ArrowRight, Calendar, Clock } from 'lucide-react';
 import Link from 'next/link';
@@ -10,7 +11,8 @@ export default function BlogPage() {
   const regularPosts = allPosts.filter(post => !post.featured);
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <BlogWrapper>
+      <div className="min-h-screen bg-gray-50">
       {/* Hero Section */}
       <section className="bg-gradient-to-br from-blue-50 to-indigo-100 py-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -173,6 +175,7 @@ export default function BlogPage() {
           </div>
         </section>
       </div>
-    </div>
+      </div>
+    </BlogWrapper>
   );
 }

@@ -1,15 +1,59 @@
+'use client';
+
 import About from '@/components/About';
 import Contact from '@/components/Contact';
 import Hero from '@/components/Hero';
-import Projects from '@/components/Projects';
+import ProjectsClientOnly from '@/components/ProjectsClientOnly';
+import { loadUserConfig } from '@/lib/config';
+import { UserConfig } from '@/lib/types';
+import { useEffect, useState } from 'react';
 
 export default function Home() {
+  const [config, setConfig] = useState<UserConfig | null>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const loadConfig = async () => {
+      try {
+        const userConfig = await loadUserConfig();
+        setConfig(userConfig);
+      } catch (error) {
+        console.error('Failed to load user configuration:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadConfig();
+  }, []);
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
+          <p className="text-gray-600">Loading...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (!config) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="text-center">
+          <p className="text-red-600">Failed to load configuration</p>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen">
       <Hero />
-      <About />
-      <Projects />
-      <Contact />
+      {config.features.enableAbout && <About />}
+      {config.features.enableProjects && <ProjectsClientOnly />}
+      {config.features.enableContact && <Contact />}
     </div>
   );
 }

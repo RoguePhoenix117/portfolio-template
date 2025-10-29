@@ -11,6 +11,15 @@ A modern, responsive portfolio website template built with Next.js 14, TypeScrip
 
 [View Live Demo](https://your-portfolio-demo.vercel.app) | [Fork Template](https://github.com/yourusername/portfolio-template/fork)
 
+## ⚡ Quick Setup
+
+1. **Clone and install**: `git clone <repo> && cd portfolio-template && npm install`
+2. **Configure**: Edit `public/user.json` with your information
+3. **Add resume**: Place your resume PDF in `public/resume.pdf`
+4. **Run**: `npm run dev` and visit `http://localhost:3001`
+
+> 📖 **Full Configuration Guide**: See [CONFIGURATION.md](CONFIGURATION.md) for detailed setup instructions
+
 ## ⭐ Features
 
 - 🎨 **Modern Design** - Clean, professional UI with smooth animations

@@ -1,25 +1,62 @@
 'use client';
 
-import { Github, Linkedin, Mail, Menu, X } from 'lucide-react';
+import { getNavigationItems, getSocialLinks, loadUserConfig } from '@/lib/config';
+import { UserConfig } from '@/lib/types';
+import { Menu, X } from 'lucide-react';
 import Link from 'next/link';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 export default function Navigation() {
   const [isOpen, setIsOpen] = useState(false);
+  const [config, setConfig] = useState<UserConfig | null>(null);
+  const [loading, setLoading] = useState(true);
 
-  const navItems = [
-    { name: 'Home', href: '/' },
-    { name: 'About', href: '/#about' },
-    { name: 'Projects', href: '/#projects' },
-    { name: 'Blog', href: '/blog' },
-    { name: 'Contact', href: '/#contact' },
-  ];
+  useEffect(() => {
+    const loadConfig = async () => {
+      try {
+        const userConfig = await loadUserConfig();
+        setConfig(userConfig);
+      } catch (error) {
+        console.error('Failed to load user configuration:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
 
-  const socialLinks = [
-    { name: 'GitHub', href: 'https://github.com/yourusername', icon: Github },
-    { name: 'LinkedIn', href: 'https://linkedin.com/in/yourusername', icon: Linkedin },
-    { name: 'Email', href: 'mailto:your.email@example.com', icon: Mail },
-  ];
+    loadConfig();
+  }, []);
+
+  if (loading) {
+    return (
+      <nav className="bg-white shadow-sm border-b border-gray-200 sticky top-0 z-50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex justify-between items-center h-16">
+            <div className="w-32 h-6 bg-gray-200 rounded animate-pulse"></div>
+            <div className="hidden md:flex space-x-8">
+              <div className="w-16 h-4 bg-gray-200 rounded animate-pulse"></div>
+              <div className="w-16 h-4 bg-gray-200 rounded animate-pulse"></div>
+              <div className="w-16 h-4 bg-gray-200 rounded animate-pulse"></div>
+            </div>
+          </div>
+        </div>
+      </nav>
+    );
+  }
+
+  if (!config) {
+    return (
+      <nav className="bg-white shadow-sm border-b border-gray-200 sticky top-0 z-50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex justify-between items-center h-16">
+            <div className="text-red-600">Failed to load navigation</div>
+          </div>
+        </div>
+      </nav>
+    );
+  }
+
+  const navItems = getNavigationItems(config);
+  const socialLinks = getSocialLinks(config);
 
   return (
     <nav className="bg-white shadow-sm border-b border-gray-200 sticky top-0 z-50">
@@ -28,9 +65,9 @@ export default function Navigation() {
           {/* Logo */}
           <Link href="/" className="flex items-center space-x-2">
             <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center">
-              <span className="text-white font-bold text-lg">Y</span>
+              <span className="text-white font-bold text-lg">{config.branding.logoInitial}</span>
             </div>
-            <span className="font-bold text-xl text-gray-900">Your Name</span>
+            <span className="font-bold text-xl text-gray-900">{config.branding.logoText}</span>
           </Link>
 
           {/* Desktop Navigation */}
