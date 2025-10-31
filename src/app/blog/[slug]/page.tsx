@@ -8,11 +8,16 @@ interface BlogPostPageProps {
   }>;
 }
 
+// Enable ISR - revalidate every 60 seconds
+export const revalidate = 60;
+
 export default async function BlogPostPage({ params }: BlogPostPageProps) {
   const { slug } = await params;
-  const post = getPostBySlug(slug);
-  const content = await getPostContent(slug);
-  const relatedPosts = getRelatedPosts(slug);
+  const [post, content, relatedPosts] = await Promise.all([
+    getPostBySlug(slug),
+    getPostContent(slug),
+    getRelatedPosts(slug),
+  ]);
 
   if (!post) {
     return (

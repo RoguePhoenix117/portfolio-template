@@ -1,29 +1,24 @@
-# Portfolio Configuration Guide
+# Configuration Guide
 
-This portfolio template now supports easy personalization through a JSON configuration file. All the hardcoded values in the Hero component have been replaced with configurable options.
+This guide explains how to customize your portfolio through the `public/user.json` configuration file.
 
 ## Quick Start
 
-1. **Create your configuration file**: Copy the example template to create your own configuration
+1. **Create your configuration file**:
    ```bash
    cp public/user.json.example public/user.json
    ```
-2. **Edit the configuration file**: Open `public/user.json` in the project directory
-3. **Update your personal information**: Replace the placeholder values with your actual information
-4. **Add your resume**: Place your resume PDF file in the `public` folder as `resume.pdf`
-5. **Run the update script**: Execute `npm run update-package` to update package.json with your repository information
-6. **Start the development server**: Run `npm run dev` to see your changes
 
-> ⚠️ **Security Warning**: The `public/user.json` file contains personal information (email addresses, social media links, etc.) and is **automatically excluded from Git** via `.gitignore` to protect your privacy. 
-> - Always create `user.json` by copying from `user.json.example`
-> - Never commit your actual `user.json` file to the repository
-> - If you've already committed it, remove it from Git history using `git rm --cached public/user.json`
+2. **Edit `public/user.json`** with your information
+
+3. **Never commit `user.json`** to Git (it's in `.gitignore`)
+
+> ⚠️ **Security**: The `public/user.json` file contains personal information and is automatically excluded from Git to protect your privacy.
 
 ## Configuration Structure
 
-The `public/user.json` file contains the following sections:
-
 ### Personal Information
+
 ```json
 {
   "personal": {
@@ -37,287 +32,89 @@ The `public/user.json` file contains the following sections:
 ```
 
 ### Social Links
+
+Add your social media profiles:
+
 ```json
 {
   "social": {
     "github": "https://github.com/yourusername",
     "linkedin": "https://linkedin.com/in/yourusername",
-    "twitter": "https://x.com/yourusername",
-    "email": "mailto:your.email@example.com"
+    "email": "mailto:your.email@example.com",
+    "twitter": "https://x.com/yourusername"
+  },
+  "socialFlags": {
+    "github": true,
+    "linkedin": true,
+    "email": true,
+    "twitter": false
   }
 }
 ```
 
-### Content Customization
+Set `socialFlags` to `true` to show the link, `false` to hide it.
+
+### Feature Toggles
+
+**Important**: Some features are disabled by default:
+
+```json
+{
+  "features": {
+    "enableBlog": false,      // Blog route (/blog) - requires Sanity CMS
+    "enableProjects": false,  // Projects route (/projects) - requires Sanity CMS
+    "enableStudio": false,    // Sanity Studio (/studio) - requires Sanity CMS
+    "enableAbout": true,     // About section on homepage
+    "enableContact": true     // Contact section on homepage
+  }
+}
+```
+
+**To enable blog/projects/studio:**
+1. Set the feature to `true` in `user.json`
+2. Set up Sanity CMS (see [SANITY_SETUP.md](SANITY_SETUP.md))
+
+When disabled, routes show "Feature Not Available" pages instead of errors.
+
+### Hero Section
+
+Customize your hero section:
+
 ```json
 {
   "content": {
     "hero": {
       "greeting": "Hi, I'm",
       "nameHighlight": "Your Name",
-      "subtitle": "Full-Stack Developer passionate about creating",
+      "subtitle1": "Developer passionate about creating",
       "subtitleHighlight1": "innovative solutions",
+      "subtitle2": "and turning ideas into",
       "subtitleHighlight2": "digital reality",
-      "description": "I specialize in React, Next.js, Node.js, and modern web technologies. I love building scalable applications and sharing knowledge through my blog.",
+      "description": "I specialize in React, Next.js, Node.js, and modern web technologies.",
       "ctaButtons": {
         "viewWork": "View My Work",
         "downloadResume": "Download Resume"
       },
       "resumeUrl": "/resume.pdf"
-    },
-    "navigation": {
-      "projects": "#projects",
-      "about": "#about"
     }
   }
 }
 ```
 
-### Feature Toggles
-```json
-{
-  "features": {
-    "enableBlog": true,
-    "enableProjects": true,
-    "enableAbout": true,
-    "enableContact": true
-  }
-}
-```
+**Resume Setup:**
+1. Place your resume PDF in `public/resume.pdf`
+2. Or update `resumeUrl` to your custom path
 
-### Branding Configuration
-```json
-{
-  "branding": {
-    "logoText": "Your Name",
-    "logoInitial": "Y"
-  }
-}
-```
+### About Section
 
-**Note**: The branding configuration affects:
-- Navigation logo and text
-- Footer logo and text
-- Copyright notice
-- Footer description (uses `personal.title`)
-
-### Repository Information
-```json
-{
-  "repository": {
-    "url": "https://github.com/yourusername/portfolio-template.git",
-    "homepage": "https://github.com/yourusername/portfolio-template#readme",
-    "issues": "https://github.com/yourusername/portfolio-template/issues"
-  }
-}
-```
-
-## Navigation & Feature Configuration
-
-The portfolio template supports modular navigation and conditional rendering of sections. You can easily enable or disable different parts of your portfolio without touching the code.
-
-### Feature Toggles Explained
-
-- **`enableBlog`**: Controls whether the Blog section appears in navigation and if the `/blog` page is accessible
-- **`enableProjects`**: Controls whether the Projects section appears on the homepage and in navigation
-- **`enableAbout`**: Controls whether the About section appears on the homepage and in navigation
-- **`enableContact`**: Controls whether the Contact section appears on the homepage and in navigation
-
-### Navigation Behavior
-
-- **Home**: Always enabled (cannot be disabled)
-- **About**: Only appears if `enableAbout` is `true` (links to `/#about`)
-- **Projects**: Only appears if `enableProjects` is `true` (links to `/projects`)
-- **Blog**: Only appears if `enableBlog` is `true` (links to `/blog`)
-- **Contact**: Only appears if `enableContact` is `true` (links to `/#contact`)
-
-**Note**: Projects and Blog have dedicated pages that show "Feature Not Available" when disabled, while About and Contact are sections on the homepage.
-
-### Disabled Features
-
-When a feature is disabled:
-- The navigation item is hidden from the menu
-- The corresponding section is not rendered on the homepage
-- The footer quick links are updated to exclude disabled features
-- For the blog, visiting `/blog` shows a "Feature Not Available" page
-- For projects, visiting `/projects` shows a "Feature Not Available" page
-
-### Example Configurations
-
-**Minimal Portfolio** (Only Home, About, Contact):
-```json
-{
-  "features": {
-    "enableBlog": false,
-    "enableProjects": false,
-    "enableAbout": true,
-    "enableContact": true
-  }
-}
-```
-
-**Developer Portfolio** (All features enabled):
-```json
-{
-  "features": {
-    "enableBlog": true,
-    "enableProjects": true,
-    "enableAbout": true,
-    "enableContact": true
-  }
-}
-```
-
-**Blog-Focused Portfolio** (Emphasize blog content):
-```json
-{
-  "features": {
-    "enableBlog": true,
-    "enableProjects": false,
-    "enableAbout": true,
-    "enableContact": true
-  }
-}
-```
-
-## How It Works
-
-1. **Configuration Loading**: All components load the `public/user.json` file at runtime
-2. **Type Safety**: TypeScript types ensure all configuration options are properly typed
-3. **Conditional Rendering**: Components check feature flags before rendering
-4. **Fallback Handling**: If the configuration fails to load, default values are used
-5. **Dynamic Updates**: Changes to `public/user.json` are reflected immediately in development mode
-
-## Available Scripts
-
-- `npm run dev` - Start the development server
-- `npm run build` - Build the production version
-- `npm run update-package` - Update package.json with your repository information
-- `npm run setup` - Run the original setup script
-
-## Customization Tips
-
-1. **Profile Image**: Replace the initials with an actual profile image by modifying the Hero component
-2. **Styling**: Colors and styling can be customized through Tailwind CSS classes
-3. **Additional Sections**: Use the same pattern to make other components configurable
-4. **Validation**: Add validation to ensure required fields are present
-
-## Error Handling
-
-The system includes robust error handling:
-- Loading states while configuration is being fetched
-- Fallback to default values if configuration fails
-- Console warnings for missing or invalid configuration
-
-## Resume File Setup
-
-The portfolio includes a "Download Resume" button that serves a PDF file. Here's how it works:
-
-### How Resume is Served
-- **File Location**: Place your resume PDF in the `public` folder as `resume.pdf`
-- **URL Path**: The resume is accessible at `https://yoursite.com/resume.pdf`
-- **Configuration**: The resume URL is configurable in `public/user.json` under `content.hero.resumeUrl`
-- **Download Behavior**: The button triggers a direct download when clicked
-
-### Setting Up Your Resume
-1. **Create your resume** as a PDF file
-2. **Name it `resume.pdf`** (or update the `resumeUrl` in `user.json`)
-3. **Place it in the `public` folder** alongside other static assets
-4. **Test the download** by clicking the "Download Resume" button
-
-### Example File Structure
-```
-public/
-├── user.json
-├── resume.pdf          ← Your resume file goes here
-├── next.svg
-└── vercel.svg
-```
-
-### Customizing Resume URL
-You can change the resume file name or path by updating the `resumeUrl` in your `user.json`:
-
-```json
-{
-  "content": {
-    "hero": {
-      "resumeUrl": "/my-custom-resume.pdf"  // Custom path
-    }
-  }
-}
-```
-
-## Content Management
-
-The portfolio template uses a content-based approach for both blog posts and projects, making it easy to add and manage content without touching the code.
-
-### Blog Posts
-
-Blog posts are stored in the `content/blog/` directory as Markdown files. Each post should include frontmatter with metadata:
-
-```markdown
----
-title: "Your Blog Post Title"
-excerpt: "A brief description of your post"
-date: "2024-01-15"
-category: "Technology"
-featured: true
-tags: ["react", "nextjs", "tutorial"]
-author: "Your Name"
----
-
-# Your Blog Post Content
-
-Write your blog post content here in Markdown...
-```
-
-### Projects
-
-Projects are stored in the `content/projects/` directory as Markdown files. Each project should include frontmatter with metadata:
-
-```markdown
----
-title: "Your Project Title"
-description: "A detailed description of your project"
-excerpt: "A brief description for the project card"
-image: "/path/to/project-image.jpg"
-technologies: ["React", "Node.js", "MongoDB"]
-githubUrl: "https://github.com/yourusername/project"
-liveUrl: "https://your-project.vercel.app"
-featured: true
-date: "2024-01-15"
-category: "Full-Stack"
-tags: ["react", "nodejs", "mongodb"]
----
-
-# Your Project Description
-
-Write detailed project information here in Markdown...
-```
-
-### Adding New Content
-
-1. **Add a new blog post**: Create a new `.md` file in `content/blog/`
-2. **Add a new project**: Create a new `.md` file in `content/projects/`
-3. **Update existing content**: Edit the corresponding `.md` files
-4. **Remove content**: Delete the `.md` files
-
-The system automatically:
-- Loads all content from the directories
-- Sorts by date (newest first)
-- Filters featured content
-- Generates categories and tags
-
-### About Section Configuration
-
-The About section is now fully configurable via `user.json`. You can customize:
+Customize your about section:
 
 ```json
 {
   "content": {
     "about": {
       "title": "About Me",
-      "subtitle": "I'm a passionate developer with a love for creating innovative solutions and continuous learning.",
+      "subtitle": "I'm a passionate developer...",
       "story": [
         "First paragraph of your story...",
         "Second paragraph of your story...",
@@ -333,16 +130,6 @@ The About section is now fully configurable via `user.json`. You can customize:
           "label": "Years Experience",
           "value": "5+",
           "color": "purple"
-        },
-        {
-          "label": "Happy Clients",
-          "value": "100+",
-          "color": "green"
-        },
-        {
-          "label": "Support Available",
-          "value": "24/7",
-          "color": "orange"
         }
       ],
       "skills": [
@@ -363,22 +150,22 @@ The About section is now fully configurable via `user.json`. You can customize:
 
 **Stats Color Options**: `blue`, `purple`, `green`, `orange`
 
-### Contact Section Configuration
+### Contact Section
 
-The Contact section is fully configurable, including form setup:
+Customize your contact section:
 
 ```json
 {
   "content": {
     "contact": {
       "title": "Get In Touch",
-      "subtitle": "Have a project in mind or want to collaborate?",
+      "subtitle": "Have a project in mind?",
       "description": "I'm always interested in new opportunities...",
       "email": "your.email@example.com",
       "phone": "+1 (555) 123-4567",
       "location": "San Francisco, CA",
       "formTitle": "Send a Message",
-      "formDescription": "Fill out the form below and I'll get back to you as soon as possible."
+      "formDescription": "Fill out the form below..."
     }
   },
   "contactForm": {
@@ -389,7 +176,7 @@ The Contact section is fully configurable, including form setup:
 
 **Contact Form Setup:**
 
-The template supports multiple form submission providers:
+The template supports multiple form providers:
 
 1. **Web3Forms** (Recommended - Free tier: 250 submissions/month)
    - Get your access key from [Web3Forms.com](https://web3forms.com/)
@@ -409,51 +196,181 @@ The template supports multiple form submission providers:
    }
    ```
 
-**For detailed contact form setup instructions, see [CONTACT_FORM_SETUP.md](CONTACT_FORM_SETUP.md)**
+See [CONTACT_FORM_SETUP.md](CONTACT_FORM_SETUP.md) for complete form setup.
 
-## Security Features
+### Branding
 
-The template includes built-in security features:
+Customize branding:
 
-### Built-in Protections
+```json
+{
+  "branding": {
+    "logoText": "Your Name",
+    "logoInitial": "Y"
+  }
+}
+```
 
-- **Security Headers**: Configured in `next.config.ts` (X-Content-Type-Options, X-Frame-Options, etc.)
-- **Rate Limiting**: Contact form is rate-limited (5 submissions per 15 minutes per IP)
-- **Honeypot Protection**: Hidden bot detection field in contact form
-- **Input Validation**: Server-side validation for all form inputs
+This affects:
+- Navigation logo and text
+- Footer logo and text
+- Copyright notice
 
-### Security Documentation
+## Navigation Behavior
 
-For comprehensive security information:
-- See [SECURITY.md](SECURITY.md) for detailed security guide
-- See [CONTACT_FORM_SETUP.md](CONTACT_FORM_SETUP.md) for form security features
+Navigation items appear based on feature toggles:
 
-## Next Steps
+- **Home**: Always enabled (cannot be disabled)
+- **About**: Appears if `enableAbout` is `true` (links to `/#about`)
+- **Projects**: Appears if `enableProjects` is `true` (links to `/projects`)
+- **Blog**: Appears if `enableBlog` is `true` (links to `/blog`)
+- **Contact**: Appears if `enableContact` is `true` (links to `/#contact`)
 
-1. **Create your configuration**: Copy `public/user.json.example` to `public/user.json` if you haven't already
-2. Customize your `public/user.json` file with your information
-3. Add your resume PDF to the `public` folder as `resume.pdf`
-4. Add your projects to the `content/projects/` directory
-5. Add your blog posts to the `content/blog/` directory
-6. Update the styling to match your brand
-7. Add more configurable sections as needed
+When a feature is disabled:
+- Navigation item is hidden
+- Section is not rendered on homepage
+- Footer quick links exclude disabled features
+- Routes show "Feature Not Available" pages
 
-For more advanced customization, you can extend the configuration structure and update the corresponding TypeScript types and components.
+## Example Configurations
 
----
+### Minimal Portfolio (Only Home, About, Contact)
+
+```json
+{
+  "features": {
+    "enableBlog": false,
+    "enableProjects": false,
+    "enableAbout": true,
+    "enableContact": true,
+    "enableStudio": false
+  }
+}
+```
+
+### Full Portfolio (All Features)
+
+```json
+{
+  "features": {
+    "enableBlog": true,
+    "enableProjects": true,
+    "enableAbout": true,
+    "enableContact": true,
+    "enableStudio": true
+  }
+}
+```
+
+**Note**: Enabling blog/projects/studio requires Sanity CMS setup (see [SANITY_SETUP.md](SANITY_SETUP.md)).
+
+### Blog-Focused Portfolio
+
+```json
+{
+  "features": {
+    "enableBlog": true,
+    "enableProjects": false,
+    "enableAbout": true,
+    "enableContact": true,
+    "enableStudio": true
+  }
+}
+```
+
+## Advanced Customization
+
+### Styling
+
+The website uses Tailwind CSS for styling. You can customize:
+
+- **Colors**: Edit `tailwind.config.js`
+- **Global styles**: Edit `src/app/globals.css`
+- **Component styles**: Edit individual component files
+
+### Adding New Sections
+
+Use the same pattern as existing sections:
+
+1. Add configuration to `user.json`
+2. Create a component in `src/components/`
+3. Add to homepage in `src/app/page.tsx`
+
+### Custom Pages
+
+Add custom pages in `src/app/`:
+
+```
+src/app/
+├── about/
+│   └── page.tsx       # Custom about page
+├── custom/
+│   └── page.tsx       # Custom route
+```
+
+## Environment Variables
+
+**Never put secrets in `user.json`** - use environment variables instead:
+
+```bash
+# .env.local (never commit this!)
+WEB3FORMS_ACCESS_KEY=your_access_key_here
+NEXT_PUBLIC_SANITY_PROJECT_ID=your_project_id
+NEXT_PUBLIC_SANITY_DATASET=production
+```
+
+Add to `.gitignore` (already included by default).
 
 ## Security Best Practices
 
-**Important**: The `public/user.json` file contains personal information and should never be committed to your repository.
-
 ### ✅ Do:
+
 - Always create `user.json` by copying from `user.json.example`
 - Keep your `user.json` file local and never commit it
-- Use environment variables for sensitive data like API keys (see [CONTACT_FORM_SETUP.md](CONTACT_FORM_SETUP.md))
+- Use environment variables for sensitive data (API keys, tokens)
+- Test configuration locally before deploying
 
 ### ❌ Don't:
-- Commit `public/user.json` to Git
+
+- Commit `public/user.json` to Git (already in `.gitignore`)
 - Share your `user.json` file publicly
 - Put sensitive API keys in `user.json` (use environment variables instead)
+- Commit `.env.local` to Git
 
-The template automatically excludes `public/user.json` from Git via `.gitignore` to protect your privacy.
+## Troubleshooting
+
+### Configuration not loading
+
+- Check file path: `public/user.json` (not `src/user.json`)
+- Verify JSON syntax is valid (use a JSON validator)
+- Restart your dev server after changes
+- Check browser console for errors
+
+### Features not enabling
+
+- Verify feature toggle is set to `true` in `user.json`
+- For blog/projects/studio: Ensure Sanity CMS is set up
+- Restart dev server after configuration changes
+
+### Social links not showing
+
+- Check `socialFlags` section (set to `true` to show)
+- Verify URLs are correct in `social` section
+- Restart dev server
+
+## Next Steps
+
+1. ✅ Copy `user.json.example` to `user.json`
+2. ✅ Customize with your information
+3. ✅ Enable features you want
+4. ✅ Set up Sanity CMS (if using blog/projects) - see [SANITY_SETUP.md](SANITY_SETUP.md)
+5. ✅ Set up contact form - see [CONTACT_FORM_SETUP.md](CONTACT_FORM_SETUP.md)
+6. ✅ Add resume PDF to `public/resume.pdf`
+7. ✅ Customize styling if desired
+8. ✅ Deploy!
+
+For deployment instructions, see [README.md](README.md#-deployment).
+
+---
+
+**Need more help?** Check the other documentation files or open an issue on GitHub.

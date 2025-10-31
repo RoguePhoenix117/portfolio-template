@@ -3,11 +3,18 @@ import { getAllCategories, getAllPosts, getFeaturedPosts } from '@/lib/blog';
 import { ArrowRight, Calendar, Clock } from 'lucide-react';
 import Link from 'next/link';
 
-export default function BlogPage() {
-  const allPosts = getAllPosts();
-  const featuredPosts = getFeaturedPosts();
+// Enable ISR - revalidate every 60 seconds
+export const revalidate = 60;
+
+export default async function BlogPage() {
+  const [allPosts, featuredPosts, categories] = await Promise.all([
+    getAllPosts(),
+    getFeaturedPosts(),
+    getAllCategories(),
+  ]);
+  
   const regularPosts = allPosts.filter(post => !post.featured);
-  const categories = ['All', ...getAllCategories()];
+  const categoriesWithAll = ['All', ...categories];
 
   return (
     <BlogWrapper>
@@ -46,7 +53,7 @@ export default function BlogPage() {
                     </div>
                     
                     <h3 className="text-2xl font-bold text-gray-900 mb-4 hover:text-blue-600 transition-colors duration-200">
-                      <Link href={`/blog/${post.id}`}>
+                      <Link href={`/blog/${post.slug}`}>
                         {post.title}
                       </Link>
                     </h3>
@@ -72,7 +79,7 @@ export default function BlogPage() {
                       </div>
                       
                       <Link
-                        href={`/blog/${post.id}`}
+                        href={`/blog/${post.slug}`}
                         className="inline-flex items-center text-blue-600 hover:text-blue-700 font-medium transition-colors duration-200"
                       >
                         Read more
@@ -91,7 +98,7 @@ export default function BlogPage() {
           <div className="flex items-center justify-between mb-8">
             <h2 className="text-3xl font-bold text-gray-900">All Posts</h2>
             <div className="flex space-x-2">
-              {categories.map((category) => (
+              {categoriesWithAll.map((category) => (
                 <button
                   key={category}
                   className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors duration-200 ${
@@ -121,7 +128,7 @@ export default function BlogPage() {
                   </div>
                   
                   <h3 className="text-xl font-bold text-gray-900 mb-3 hover:text-blue-600 transition-colors duration-200">
-                    <Link href={`/blog/${post.id}`}>
+                    <Link href={`/blog/${post.slug}`}>
                       {post.title}
                     </Link>
                   </h3>
@@ -140,7 +147,7 @@ export default function BlogPage() {
                     </span>
                     
                     <Link
-                      href={`/blog/${post.id}`}
+                      href={`/blog/${post.slug}`}
                       className="inline-flex items-center text-blue-600 hover:text-blue-700 font-medium text-sm transition-colors duration-200"
                     >
                       Read more

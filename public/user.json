@@ -137,10 +137,11 @@
     }
   },
   "features": {
-    "enableBlog": true,
-    "enableProjects": true,
+    "enableBlog": false,
+    "enableProjects": false,
     "enableAbout": true,
-    "enableContact": true
+    "enableContact": true,
+    "enableStudio": false
   },
   "branding": {
     "logoText": "Your Name",

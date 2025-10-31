@@ -1,10 +1,7 @@
-import fs from 'fs';
-import matter from 'gray-matter';
-import path from 'path';
 import { remark } from 'remark';
 import html from 'remark-html';
-
-const projectsDirectory = path.join(process.cwd(), 'content/projects');
+import { client } from './sanity/client';
+import { urlFor } from './sanity/image';
 
 export interface Project {
   id: string;
@@ -37,97 +34,205 @@ export interface ProjectMetadata {
   tags: string[];
 }
 
-// Get all project slugs
-export function getAllProjectSlugs(): string[] {
+// Transform Sanity project to Project format
+function transformProject(project: any): Project {
+  const content = project.content || '';
+  const imageUrl = project.image 
+    ? urlFor(project.image).width(800).height(600).url()
+    : project.image?.asset?.url || '/placeholder.jpg';
+  
+  return {
+    id: project._id || project.slug?.current || '',
+    slug: project.slug?.current || '',
+    title: project.title || '',
+    description: project.description || '',
+    excerpt: project.excerpt || '',
+    image: imageUrl,
+    technologies: project.technologies || [],
+    githubUrl: project.githubUrl || '',
+    liveUrl: project.liveUrl || '',
+    featured: project.featured || false,
+    date: project.date || new Date().toISOString().split('T')[0],
+    category: project.category || '',
+    tags: project.tags || [],
+    content,
+  };
+}
+
+// Process markdown content to HTML
+async function processContent(content: string): Promise<string> {
+  if (!content) return '';
   try {
-    const fileNames = fs.readdirSync(projectsDirectory);
-    return fileNames
-      .filter(name => name.endsWith('.md'))
-      .map(name => name.replace(/\.md$/, ''));
+    const processed = remark().use(html).processSync(content);
+    return processed.toString();
   } catch (error) {
-    console.error('Error reading projects directory:', error);
+    console.error('Error processing content:', error);
+    return content;
+  }
+}
+
+// Get all project slugs
+export async function getAllProjectSlugs(): Promise<string[]> {
+  try {
+    const projects = await client.fetch<Array<{ slug: { current: string } }>>(`
+      *[_type == "project"] {
+        "slug": slug
+      }
+    `);
+    return projects.map(project => project.slug?.current || '').filter(Boolean);
+  } catch (error) {
+    console.error('Error fetching project slugs:', error);
     return [];
   }
 }
 
 // Get project by slug
-export function getProjectBySlug(slug: string): Project | null {
+export async function getProjectBySlug(slug: string): Promise<Project | null> {
   try {
-    const fullPath = path.join(projectsDirectory, `${slug}.md`);
-    const fileContents = fs.readFileSync(fullPath, 'utf8');
-    const { data, content } = matter(fileContents);
-
-    const metadata = data as ProjectMetadata;
+    const project = await client.fetch<any>(`
+      *[_type == "project" && slug.current == $slug][0] {
+        _id,
+        title,
+        "slug": slug.current,
+        description,
+        excerpt,
+        image,
+        technologies,
+        githubUrl,
+        liveUrl,
+        featured,
+        date,
+        category,
+        tags,
+        content
+      }
+    `, { slug });
     
-    // Process markdown content
-    const processedContent = remark().use(html).processSync(content).toString();
-
-    // Calculate read time (rough estimate)
-    const readTime = Math.ceil(content.split(/\s+/).length / 200);
-
-    return {
-      id: slug,
-      slug,
-      title: metadata.title,
-      description: metadata.description,
-      excerpt: metadata.excerpt,
-      image: metadata.image,
-      technologies: metadata.technologies || [],
-      githubUrl: metadata.githubUrl,
-      liveUrl: metadata.liveUrl,
-      featured: metadata.featured || false,
-      date: metadata.date,
-      category: metadata.category,
-      tags: metadata.tags || [],
-      content: processedContent,
-    };
+    if (!project) return null;
+    
+    const transformed = transformProject(project);
+    // Process markdown content to HTML
+    if (transformed.content) {
+      transformed.content = await processContent(transformed.content);
+    }
+    
+    return transformed;
   } catch (error) {
-    console.error(`Error reading project ${slug}:`, error);
+    console.error(`Error fetching project ${slug}:`, error);
     return null;
   }
 }
 
 // Get all projects with metadata
-export function getAllProjects(): Project[] {
+export async function getAllProjects(): Promise<Project[]> {
   try {
-    const slugs = getAllProjectSlugs();
-    const projects = slugs
-      .map(slug => {
-        const project = getProjectBySlug(slug);
-        return project;
-      })
-      .filter(project => project !== null)
-      .sort((a, b) => (a.date < b.date ? 1 : -1)); // Sort by date, newest first
-
-    return projects as Project[];
+    const projects = await client.fetch<any[]>(`
+      *[_type == "project"] | order(date desc) {
+        _id,
+        title,
+        "slug": slug.current,
+        description,
+        excerpt,
+        image,
+        technologies,
+        githubUrl,
+        liveUrl,
+        featured,
+        date,
+        category,
+        tags,
+        content
+      }
+    `);
+    
+    return projects.map(transformProject);
   } catch (error) {
-    console.error('Error getting all projects:', error);
+    console.error('Error fetching all projects:', error);
     return [];
   }
 }
 
 // Get featured projects
-export function getFeaturedProjects(): Project[] {
-  const allProjects = getAllProjects();
-  return allProjects.filter(project => project.featured);
+export async function getFeaturedProjects(): Promise<Project[]> {
+  try {
+    const projects = await client.fetch<any[]>(`
+      *[_type == "project" && featured == true] | order(date desc) {
+        _id,
+        title,
+        "slug": slug.current,
+        description,
+        excerpt,
+        image,
+        technologies,
+        githubUrl,
+        liveUrl,
+        featured,
+        date,
+        category,
+        tags,
+        content
+      }
+    `);
+    
+    return projects.map(transformProject);
+  } catch (error) {
+    console.error('Error fetching featured projects:', error);
+    return [];
+  }
 }
 
 // Get projects by category
-export function getProjectsByCategory(category: string): Project[] {
-  const allProjects = getAllProjects();
-  return allProjects.filter(project => project.category.toLowerCase() === category.toLowerCase());
+export async function getProjectsByCategory(category: string): Promise<Project[]> {
+  try {
+    const projects = await client.fetch<any[]>(`
+      *[_type == "project" && category == $category] | order(date desc) {
+        _id,
+        title,
+        "slug": slug.current,
+        description,
+        excerpt,
+        image,
+        technologies,
+        githubUrl,
+        liveUrl,
+        featured,
+        date,
+        category,
+        tags,
+        content
+      }
+    `, { category });
+    
+    return projects.map(transformProject);
+  } catch (error) {
+    console.error('Error fetching projects by category:', error);
+    return [];
+  }
 }
 
 // Get all categories
-export function getAllProjectCategories(): string[] {
-  const allProjects = getAllProjects();
-  const categories = allProjects.map(project => project.category);
-  return [...new Set(categories)];
+export async function getAllProjectCategories(): Promise<string[]> {
+  try {
+    const categories = await client.fetch<string[]>(`
+      array::unique(*[_type == "project"].category)
+    `);
+    return [...new Set(categories)];
+  } catch (error) {
+    console.error('Error fetching project categories:', error);
+    return [];
+  }
 }
 
 // Get all tags
-export function getAllProjectTags(): string[] {
-  const allProjects = getAllProjects();
-  const tags = allProjects.flatMap(project => project.tags);
-  return [...new Set(tags)];
+export async function getAllProjectTags(): Promise<string[]> {
+  try {
+    const tags = await client.fetch<string[][]>(`
+      *[_type == "project"].tags
+    `);
+    const flatTags = tags.flat();
+    return [...new Set(flatTags)];
+  } catch (error) {
+    console.error('Error fetching project tags:', error);
+    return [];
+  }
 }

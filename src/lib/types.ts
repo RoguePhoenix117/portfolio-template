@@ -103,6 +103,7 @@ export interface UserConfig {
     enableProjects: boolean;
     enableAbout: boolean;
     enableContact: boolean;
+    enableStudio: boolean;
   };
   branding: {
     logoText: string;

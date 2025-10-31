@@ -130,7 +130,8 @@ export function getDefaultConfig(): UserConfig {
       enableBlog: true,
       enableProjects: true,
       enableAbout: true,
-      enableContact: true
+      enableContact: true,
+      enableStudio: true
     },
     branding: {
       logoText: "Your Name",

@@ -1,18 +1,15 @@
 # Contact Form Setup Guide
 
-This guide explains how to set up the contact form for your portfolio website. The template supports multiple form submission providers for flexibility.
+This guide explains how to set up the contact form for your portfolio website. The template supports multiple form submission providers.
 
 ## Supported Providers
 
-1. **Web3Forms** (Recommended for beginners)
+1. **Web3Forms** (Recommended for beginners - Free tier: 250 submissions/month)
 2. **Generic API** (For custom integrations)
-3. **Custom** (For manual implementation)
-
----
 
 ## Option 1: Web3Forms (Recommended)
 
-Web3Forms is a free service that allows you to receive form submissions directly in your email inbox without any backend code. The free tier includes **250 submissions per month**, which is perfect for a portfolio website.
+Web3Forms is a free service that allows you to receive form submissions directly in your email inbox without any backend code.
 
 ### Step 1: Get Your Web3Forms Access Key
 
@@ -20,7 +17,7 @@ Web3Forms is a free service that allows you to receive form submissions directly
 2. Click **"Get Your Access Key"** or **"Sign Up"**
 3. Enter your email address
 4. You'll receive an access key via email
-5. Copy the access key (it looks like: `xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx`)
+5. Copy the access key (looks like: `xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx`)
 
 ### Step 2: Configure as Environment Variable
 
@@ -74,7 +71,7 @@ Open `public/user.json` and ensure the `contactForm` section is set to use Web3F
 
 ### Step 4: Test Your Form
 
-1. Start your development server: `pnpm dev`
+1. Start your development server: `npm run dev`
 2. Navigate to the contact section of your website
 3. Fill out and submit the form
 4. Check your email inbox - you should receive the form submission
@@ -86,12 +83,6 @@ Open `public/user.json` and ensure the `contactForm` section is set to use Web3F
 - ✅ **Email notifications**: Receive submissions directly in your inbox
 - ✅ **Spam protection**: Built-in bot protection
 - ✅ **Upgrade options**: Available if you need more submissions
-
-### Web3Forms Documentation
-
-For more information, visit [Web3Forms Documentation](https://docs.web3forms.com/)
-
----
 
 ## Option 2: Generic API Integration
 
@@ -125,7 +116,7 @@ Open `public/user.json` and update the `contactForm` section:
 
 ### Step 3: Test Your Form
 
-1. Start your development server: `pnpm dev`
+1. Start your development server: `npm run dev`
 2. Navigate to the contact section
 3. Fill out and submit the form
 4. Verify the submission was received by your service
@@ -160,8 +151,6 @@ Open `public/user.json` and update the `contactForm` section:
 }
 ```
 
----
-
 ## Security Features
 
 The contact form includes several security features:
@@ -185,8 +174,6 @@ The contact form includes several security features:
 - Message length limit (5000 characters)
 - Server-side validation for security
 
----
-
 ## Troubleshooting
 
 ### Form submissions not working
@@ -201,6 +188,7 @@ The contact form includes several security features:
 ### Rate limit errors
 
 If you're seeing "Too many requests" errors:
+
 - Wait 15 minutes before trying again
 - This is normal rate limiting behavior to prevent spam
 
@@ -220,8 +208,6 @@ If you're seeing "Too many requests" errors:
 3. **Verify your API accepts JSON** in the expected format
 4. **Check CORS settings** if accessing from a different domain
 
----
-
 ## Form Data Format
 
 The form sends the following data structure:
@@ -236,27 +222,26 @@ The form sends the following data structure:
 ```
 
 For Web3Forms, additional fields are automatically added:
+
 - `access_key`: Your Web3Forms access key
 - `from_name`: The submitter's name
 - `botcheck`: False (honeypot protection)
-
----
 
 ## Next Steps
 
 After setting up your contact form:
 
-1. **Test thoroughly** with multiple submissions
-2. **Set up email notifications** (if using Web3Forms, this is automatic)
-3. **Monitor submissions** through your chosen service's dashboard
-4. **Consider upgrading** if you exceed the free tier limits
+1. ✅ **Test thoroughly** with multiple submissions
+2. ✅ **Set up email notifications** (if using Web3Forms, this is automatic)
+3. ✅ **Monitor submissions** through your chosen service's dashboard
+4. ✅ **Consider upgrading** if you exceed the free tier limits
+
+## Resources
+
+- [Web3Forms Documentation](https://docs.web3forms.com/)
+- [Formspree Documentation](https://formspree.io/docs)
+- [FormSubmit Documentation](https://formsubmit.co/)
 
 ---
 
-## Support
-
-For issues or questions:
-- Web3Forms: [Web3Forms Documentation](https://docs.web3forms.com/)
-- Template issues: Open an issue on GitHub
-- Custom integrations: Refer to your API provider's documentation
-
+**Need help?** Open an issue on GitHub or refer to [CONFIGURATION.md](CONFIGURATION.md) for more customization options.

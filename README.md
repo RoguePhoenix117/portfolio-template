@@ -5,333 +5,216 @@
 [![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-4-38B2AC?style=for-the-badge&logo=tailwind-css)](https://tailwindcss.com/)
 [![License](https://img.shields.io/badge/License-MIT-green?style=for-the-badge)](LICENSE)
 
-A modern, responsive portfolio website template built with Next.js 14, TypeScript, and Tailwind CSS. This template is perfect for developers who want to showcase their skills, projects, and blog posts in a clean, professional design.
-
-## 🚀 Live Demo
-
-[View Live Demo](https://your-portfolio-demo.vercel.app) | [Fork Template](https://github.com/yourusername/portfolio-template/fork)
+A modern, responsive portfolio website template built with Next.js 14, TypeScript, and Tailwind CSS. Perfect for developers who want to showcase their work in a clean, professional design.
 
 ## ⚡ Quick Setup
 
-1. **Clone and install**: `git clone <repo> && cd portfolio-template && npm install`
-2. **Create your config**: Copy `public/user.json.example` to `public/user.json` and edit with your information
+1. **Clone and install**:
+   ```bash
+   git clone <repo> && cd portfolio-template && npm install
+   ```
+
+2. **Create your config**:
    ```bash
    cp public/user.json.example public/user.json
    ```
-3. **Add resume**: Place your resume PDF in `public/resume.pdf`
-4. **Set up contact form**: See [CONTACT_FORM_SETUP.md](CONTACT_FORM_SETUP.md) for Web3Forms or generic API setup
-5. **Run**: `npm run dev` and visit `http://localhost:3001`
+   Edit `public/user.json` with your information.
 
-> ⚠️ **Important Security Note**: The `public/user.json` file is excluded from Git (via `.gitignore`) to protect your personal information. Always create it from `user.json.example` and never commit your actual `user.json` file to the repository.
+3. **Add your resume**: Place `resume.pdf` in the `public/` folder
 
-> 📖 **Full Configuration Guide**: See [CONFIGURATION.md](CONFIGURATION.md) for detailed setup instructions
-> 🔒 **Security Guide**: See [SECURITY.md](SECURITY.md) for security features and recommendations
+4. **Set up contact form** (optional): See [CONTACT_FORM_SETUP.md](CONTACT_FORM_SETUP.md)
+
+5. **Run**:
+   ```bash
+   npm run dev
+   ```
+   Visit `http://localhost:3001`
+
+> ⚠️ **Security**: Never commit `public/user.json` to Git. It's automatically excluded via `.gitignore`.
+
+## 🎯 Feature Toggles
+
+**Important**: Some features are **disabled by default** and must be enabled in `public/user.json`:
+
+```json
+{
+  "features": {
+    "enableBlog": false,      // Blog route (/blog) - disabled by default
+    "enableProjects": false,  // Projects route (/projects) - disabled by default
+    "enableStudio": false,    // Sanity Studio (/studio) - disabled by default
+    "enableAbout": true,      // About section - enabled by default
+    "enableContact": true     // Contact section - enabled by default
+  }
+}
+```
+
+To enable:
+- **Blog**: Requires Sanity CMS setup (see [SANITY_SETUP.md](SANITY_SETUP.md))
+- **Projects**: Requires Sanity CMS setup (see [SANITY_SETUP.md](SANITY_SETUP.md))
+- **Studio**: Requires Sanity CMS setup + enable in config
+
+When disabled, routes show a "Feature Not Available" page instead of errors.
 
 ## ⭐ Features
 
-- 🎨 **Modern Design** - Clean, professional UI with smooth animations
-- 📱 **Fully Responsive** - Optimized for all device sizes
-- ⚡ **Fast Performance** - Built with Next.js 14 and optimized for speed
-- 📝 **Blog System** - Markdown-based blog with categories and tags
-- 💼 **Project Showcase** - Display your projects with live demos
-- 📧 **Contact Form** - Integrated with Web3Forms (250 free submissions/month) or custom API
-- 🔒 **Security Features** - Rate limiting, honeypot protection, security headers
+- 🚀 **Modern Stack** - Next.js 14, TypeScript, Tailwind CSS
+- 📱 **Fully Responsive** - Mobile-first design
+- 🎨 **Beautiful UI** - Clean, modern design with animations
+- 📝 **Blog System** - Sanity.io CMS-powered (optional, disabled by default)
+- 💼 **Project Showcase** - Sanity.io CMS-powered (optional, disabled by default)
+- 📧 **Contact Form** - Web3Forms (250 free/month) or custom API
+- 🔒 **Security** - Rate limiting, honeypot, security headers
 - 🔍 **SEO Optimized** - Meta tags and structured data
-- 🎯 **Type Safe** - Built with TypeScript for better development experience
-- 🚀 **Easy Deployment** - One-click deployment to Vercel/Netlify
-- ⚙️ **Fully Configurable** - Customize everything via JSON without touching code
+- ⚡ **Performance** - Optimized images, code splitting
+- ⚙️ **Fully Configurable** - All content via `user.json`
 
-## Features
+## 📚 Documentation
 
-- 🚀 **Modern Tech Stack**: Built with Next.js 14, TypeScript, and Tailwind CSS
-- 📱 **Fully Responsive**: Optimized for all device sizes
-- 🎨 **Beautiful Design**: Clean, modern UI with smooth animations
-- 📝 **Blog System**: Built-in blog functionality with sample posts
-- 💼 **Project Showcase**: Display your projects with live demos and GitHub links
-- 📧 **Contact Form**: Working contact form with Web3Forms integration (250 free submissions/month) or custom API
-- 🔒 **Security**: Rate limiting, honeypot protection, security headers, input validation
-- 🔍 **SEO Optimized**: Meta tags and structured data for better search visibility
-- ⚡ **Performance**: Fast loading with optimized images and code splitting
-- ⚙️ **Fully Configurable**: About section, Contact section, and all content customizable via JSON
-
-## Sections
-
-### Homepage
-- Hero section with introduction and call-to-action
-- About section with skills and experience
-- Featured projects showcase
-- Contact information and social links
-
-### Blog
-- Blog listing page with categories and search
-- Individual blog post pages
-- Author bio and social links
-- Newsletter signup
-
-### Projects
-- Featured projects with detailed descriptions
-- Project grid with technologies used
-- Live demo and GitHub links
-- Responsive project cards
-
-### Contact
-- Contact form with validation
-- Contact information
-- Social media links
-- Professional contact details
-
-## 🚀 Quick Start
-
-### Option 1: Fork This Template (Recommended)
-
-1. **Fork this repository** by clicking the "Fork" button at the top
-2. **Clone your fork**:
-   ```bash
-   git clone https://github.com/YOUR_USERNAME/portfolio-template.git
-   cd portfolio-template
-   ```
-3. **Install dependencies**:
-   ```bash
-   pnpm install
-   # or
-   npm install
-   ```
-4. **Start developing**:
-   ```bash
-   pnpm dev
-   # or
-   npm run dev
-   ```
-5. **Run the setup script** to customize with your information:
-   ```bash
-   pnpm setup
-   # or
-   npm run setup
-   ```
-6. **Customize** your portfolio (see [Customization Guide](#customization))
-
-### Option 2: Use as Template
-
-1. Click "Use this template" on GitHub
-2. Create a new repository from this template
-3. Follow the same steps as Option 1
-
-### Prerequisites
-
-- Node.js 18+ 
-- pnpm (recommended) or npm
-- Git
-
-## Customization
-
-### Personal Information
-
-Update the following files with your personal information:
-
-1. **Navigation & Footer** (`src/components/Navigation.tsx`, `src/components/Footer.tsx`):
-   - Replace "Your Name" with your actual name
-   - Update social media links
-   - Update email and contact information
-
-2. **Hero Section** (`src/components/Hero.tsx`):
-   - Update the hero text and description
-   - Replace the profile image placeholder
-   - Update social links
-
-3. **About Section** (`src/components/About.tsx`):
-   - Update your story and experience
-   - Modify skills and technologies
-   - Update statistics
-
-4. **Projects** (`src/components/Projects.tsx`):
-   - Replace with your actual projects
-   - Update project descriptions and links
-   - Add your GitHub repositories
-
-5. **Contact** (`src/components/Contact.tsx`):
-   - Update contact information
-   - Configure form submission (currently simulated)
-
-6. **Metadata** (`src/app/layout.tsx`):
-   - Update page title and description
-   - Add your name and keywords
-
-### Blog Posts
-
-To add new blog posts:
-
-1. Add your blog post data to `src/app/blog/[slug]/page.tsx`
-2. Update the blog listing in `src/app/blog/page.tsx`
-3. For a more dynamic solution, consider integrating with a headless CMS
-
-### Styling
-
-The website uses Tailwind CSS for styling. You can customize:
-
-- Colors in `tailwind.config.js`
-- Custom styles in `src/app/globals.css`
-- Component-specific styles in individual component files
+- **[CONFIGURATION.md](CONFIGURATION.md)** - Complete customization guide
+- **[SANITY_SETUP.md](SANITY_SETUP.md)** - Set up Sanity CMS for blog/projects (optional)
+- **[CONTACT_FORM_SETUP.md](CONTACT_FORM_SETUP.md)** - Configure contact form
+- **[SECURITY.md](SECURITY.md)** - Security features and best practices
+- **[STUDIO_SECURITY.md](STUDIO_SECURITY.md)** - Additional Sanity Studio security (optional)
+- **[CONTRIBUTING.md](CONTRIBUTING.md)** - Contribute to this template
 
 ## 🚀 Deployment
 
-### Vercel (Recommended)
+### Free Deployment Options
 
-1. **Push your changes** to your forked repository
-2. **Go to [Vercel](https://vercel.com)** and sign in with GitHub
-3. **Click "New Project"** and import your forked repository
-4. **Configure settings**:
-   - Framework Preset: Next.js
-   - Build Command: `pnpm build` (or `npm run build`)
-   - Output Directory: `.next`
-5. **Click "Deploy"** - Your portfolio will be live in minutes!
+#### Vercel (Recommended - 100% Free)
 
-### Netlify
+1. **Push to GitHub**: Push your code to a GitHub repository
+2. **Import to Vercel**:
+   - Go to [vercel.com](https://vercel.com) and sign in with GitHub
+   - Click "New Project" → Import your repository
+   - Vercel auto-detects Next.js settings
+3. **Add Environment Variables** (if using optional features):
+   - Go to Project Settings → Environment Variables
+   - Add `WEB3FORMS_ACCESS_KEY` (if using contact form)
+   - Add `NEXT_PUBLIC_SANITY_PROJECT_ID` and `NEXT_PUBLIC_SANITY_DATASET` (if using Sanity)
+4. **Deploy**: Click "Deploy" - your site is live in ~2 minutes!
 
-1. **Build the project**:
-   ```bash
-   pnpm build
-   ```
-2. **Go to [Netlify](https://netlify.com)** and sign in with GitHub
-3. **Drag and drop** your `.next` folder or connect your repository
-4. **Configure build settings**:
-   - Build command: `pnpm build`
+**Vercel Free Tier Includes:**
+- ✅ Unlimited deployments
+- ✅ Automatic HTTPS
+- ✅ Global CDN
+- ✅ Custom domains
+- ✅ 100GB bandwidth/month
+- ✅ Serverless functions
+- ✅ Automatic deployments from Git
+
+#### Netlify (100% Free)
+
+1. **Push to GitHub**: Push your code to a GitHub repository
+2. **Import to Netlify**:
+   - Go to [netlify.com](https://netlify.com) and sign in with GitHub
+   - Click "New site from Git" → Select your repository
+   - Build settings: `npm run build`
    - Publish directory: `.next`
-5. **Deploy** - Your portfolio is live!
+3. **Add Environment Variables** (if needed)
+4. **Deploy**: Site goes live automatically
 
-### Other Platforms
+**Netlify Free Tier Includes:**
+- ✅ Unlimited deployments
+- ✅ Automatic HTTPS
+- ✅ Global CDN
+- ✅ Custom domains
+- ✅ 100GB bandwidth/month
+- ✅ 125K serverless function invocations/month
 
-The project can be deployed to any platform that supports Next.js:
-- **AWS Amplify** - Connect your GitHub repository
-- **DigitalOcean App Platform** - One-click deployment
-- **Railway** - Simple deployment with automatic builds
-- **Render** - Free tier available
+#### Other Free Options
 
-## 📝 Template Features
+- **Render** - Free tier with automatic deployments
+- **Railway** - Free tier with $5/month credit
+- **Cloudflare Pages** - Free, unlimited bandwidth
+- **GitHub Pages** - Free (requires static export)
 
-This template includes everything you need to get started:
+### Deployment Checklist
 
-- ✅ **Pre-configured** Next.js 14 with TypeScript
-- ✅ **Responsive design** with Tailwind CSS
-- ✅ **Blog system** with markdown support
-- ✅ **Project showcase** with live demos
-- ✅ **Contact form** with validation
-- ✅ **SEO optimization** out of the box
-- ✅ **Performance optimized** for fast loading
-- ✅ **Mobile-first** responsive design
+Before deploying:
 
-## 🎯 Perfect For
+- [ ] Set up `public/user.json` with your information
+- [ ] Add `resume.pdf` to `public/` folder
+- [ ] Configure contact form (optional) - see [CONTACT_FORM_SETUP.md](CONTACT_FORM_SETUP.md)
+- [ ] Enable features you want in `features` section of `user.json`
+- [ ] Set up Sanity CMS (if enabling blog/projects) - see [SANITY_SETUP.md](SANITY_SETUP.md)
+- [ ] Add environment variables to your hosting platform:
+  - `WEB3FORMS_ACCESS_KEY` (if using contact form)
+  - `NEXT_PUBLIC_SANITY_PROJECT_ID` (if using Sanity)
+  - `NEXT_PUBLIC_SANITY_DATASET` (if using Sanity)
 
-- **Developers** looking to showcase their work
-- **Students** building their first portfolio
-- **Freelancers** needing a professional online presence
-- **Job seekers** wanting to stand out to employers
-- **Anyone** who wants a modern, responsive website
+## 🎨 Customization
 
-## 🌟 Why This Template?
+### Quick Customization
 
-- **Modern Stack**: Built with the latest technologies
-- **Easy to Customize**: Well-documented and organized code
-- **SEO Ready**: Optimized for search engines
-- **Fast Performance**: Optimized for Core Web Vitals
-- **Mobile First**: Responsive design that works everywhere
-- **Blog Included**: Share your thoughts and knowledge
-- **Open Source**: Free to use and modify
+Edit `public/user.json` to customize:
 
-## Project Structure
+- **Personal info**: Name, title, email, location
+- **Social links**: GitHub, LinkedIn, Twitter, etc.
+- **Content**: Hero section, About section, Contact section
+- **Features**: Enable/disable blog, projects, studio
+- **Branding**: Logo text, colors (via Tailwind)
+
+### Advanced Customization
+
+- **Styling**: Edit `src/app/globals.css` and `tailwind.config.js`
+- **Components**: Modify components in `src/components/`
+- **Routes**: Add custom pages in `src/app/`
+
+See [CONFIGURATION.md](CONFIGURATION.md) for complete customization details.
+
+## 🛠️ Tech Stack
+
+- **Framework**: [Next.js 14](https://nextjs.org/)
+- **Language**: [TypeScript](https://www.typescriptlang.org/)
+- **Styling**: [Tailwind CSS](https://tailwindcss.com/)
+- **CMS**: [Sanity.io](https://sanity.io/) (optional)
+- **Icons**: [Lucide React](https://lucide.dev/)
+- **Fonts**: Inter (Google Fonts)
+
+## 📝 Project Structure
 
 ```
 src/
-├── app/
-│   ├── blog/
-│   │   ├── page.tsx          # Blog listing page
-│   │   └── [slug]/
-│   │       └── page.tsx      # Individual blog post
-│   ├── globals.css           # Global styles
-│   ├── layout.tsx            # Root layout
-│   └── page.tsx              # Homepage
-├── components/
-│   ├── About.tsx             # About section
-│   ├── Contact.tsx           # Contact section
-│   ├── Footer.tsx            # Footer component
-│   ├── Hero.tsx              # Hero section
-│   ├── Navigation.tsx        # Navigation component
-│   └── Projects.tsx          # Projects section
+├── app/              # Next.js app directory
+│   ├── blog/         # Blog pages (optional)
+│   ├── projects/     # Projects page (optional)
+│   ├── studio/       # Sanity Studio (optional)
+│   └── page.tsx      # Homepage
+├── components/       # React components
+├── lib/             # Utilities and helpers
+│   ├── blog.ts      # Blog data fetching
+│   ├── projects.ts  # Projects data fetching
+│   └── sanity/      # Sanity CMS setup
+└── ...
 ```
 
-## Technologies Used
+## 🔒 Security
 
-- **Framework**: Next.js 14
-- **Language**: TypeScript
-- **Styling**: Tailwind CSS
-- **Icons**: Lucide React
-- **Fonts**: Inter (Google Fonts)
-- **Deployment**: Vercel (recommended)
+Built-in security features:
 
-## Performance Features
+- ✅ Security headers (X-Content-Type-Options, X-Frame-Options, etc.)
+- ✅ Rate limiting (5 submissions per 15 minutes)
+- ✅ Honeypot protection for forms
+- ✅ Input validation
+- ✅ Environment variable protection
 
-- Server-side rendering (SSR)
-- Static site generation (SSG)
-- Image optimization
-- Code splitting
-- Lazy loading
-- SEO optimization
+See [SECURITY.md](SECURITY.md) for details.
 
-## Browser Support
+## 🤝 Contributing
 
-- Chrome (latest)
-- Firefox (latest)
-- Safari (latest)
-- Edge (latest)
+Contributions welcome! See [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
 
-## Contributing
-
-1. Fork the repository
-2. Create a feature branch
-3. Make your changes
-4. Submit a pull request
-
-## License
+## 📄 License
 
 This project is open source and available under the [MIT License](LICENSE).
 
-## Security
+## 💡 Support
 
-The template includes built-in security features:
-
-- ✅ **Security Headers** - X-Content-Type-Options, X-Frame-Options, X-XSS-Protection
-- ✅ **Rate Limiting** - Contact form is rate-limited (5 submissions per 15 minutes per IP)
-- ✅ **Honeypot Protection** - Hidden bot detection field
-- ✅ **Input Validation** - Server-side validation for all form inputs
-- ✅ **DDoS Protection** - Automatic on Vercel/Netlify deployments
-
-For detailed security information, see [SECURITY.md](SECURITY.md)
-
-## Contact Form Setup
-
-The contact form supports multiple providers:
-
-1. **Web3Forms** (Recommended)
-   - Free tier: 250 submissions/month
-   - No backend required
-   - Easy setup with access key via environment variable
-   - **⚠️ Access key must be in `.env.local` (not in user.json)**
-
-2. **Generic API** (Custom integrations)
-   - Works with any API endpoint
-   - Custom headers supported
-
-For detailed setup instructions, see [CONTACT_FORM_SETUP.md](CONTACT_FORM_SETUP.md)
-
-## Documentation
-
-- 📖 [CONFIGURATION.md](CONFIGURATION.md) - Complete configuration guide
-- 📧 [CONTACT_FORM_SETUP.md](CONTACT_FORM_SETUP.md) - Contact form setup instructions
-- 🔒 [SECURITY.md](SECURITY.md) - Security features and recommendations
-- 📝 [BLOG_GUIDE.md](BLOG_GUIDE.md) - Blog management guide
-
-## Support
-
-If you have any questions or need help customizing the portfolio, please open an issue on GitHub.
+If you have questions:
+- Open an issue on GitHub
+- Check the documentation files
+- Review example configuration in `user.json.example`
 
 ---
 

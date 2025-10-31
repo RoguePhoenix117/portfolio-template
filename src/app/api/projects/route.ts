@@ -3,8 +3,10 @@ import { NextResponse } from 'next/server';
 
 export async function GET() {
   try {
-    const allProjects = getAllProjects();
-    const featuredProjects = getFeaturedProjects();
+    const [allProjects, featuredProjects] = await Promise.all([
+      getAllProjects(),
+      getFeaturedProjects(),
+    ]);
 
     return NextResponse.json({
       allProjects,

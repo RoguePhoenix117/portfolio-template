@@ -1,7 +1,10 @@
 import ProjectsServer from '@/components/ProjectsServer';
 import ProjectsWrapper from '@/components/ProjectsWrapper';
 
-export default function ProjectsPage() {
+// Enable ISR - revalidate every 60 seconds
+export const revalidate = 60;
+
+export default async function ProjectsPage() {
   return (
     <ProjectsWrapper>
       <div className="min-h-screen bg-gray-50">

@@ -1,10 +1,6 @@
-import fs from 'fs';
-import matter from 'gray-matter';
-import path from 'path';
 import { remark } from 'remark';
 import html from 'remark-html';
-
-const postsDirectory = path.join(process.cwd(), 'content/blog');
+import { client } from './sanity/client';
 
 export interface BlogPost {
   id: string;
@@ -30,83 +26,161 @@ export interface BlogPostMetadata {
   author: string;
 }
 
+// Helper function to calculate read time
+function calculateReadTime(content: string): string {
+  const wordCount = content.split(/\s+/).length;
+  const readTime = Math.ceil(wordCount / 200);
+  return `${readTime} min read`;
+}
+
+// Transform Sanity post to BlogPost format
+function transformPost(post: any): BlogPost {
+  const content = post.content || '';
+  // Handle slug - it might be a string (from GROQ) or an object with .current
+  const slug = typeof post.slug === 'string' 
+    ? post.slug 
+    : (post.slug?.current || '');
+  
+  return {
+    id: post._id || slug || '',
+    slug: slug || '',
+    title: post.title || 'Untitled',
+    excerpt: post.excerpt || '',
+    date: post.date || new Date().toISOString().split('T')[0],
+    readTime: calculateReadTime(content),
+    category: post.category || 'Uncategorized',
+    featured: post.featured || false,
+    tags: post.tags || [],
+    author: post.author || 'Your Name',
+    content,
+  };
+}
+
 // Get all blog post slugs
-export function getAllPostSlugs(): string[] {
+export async function getAllPostSlugs(): Promise<string[]> {
   try {
-    const fileNames = fs.readdirSync(postsDirectory);
-    return fileNames
-      .filter(name => name.endsWith('.md'))
-      .map(name => name.replace(/\.md$/, ''));
+    const posts = await client.fetch<Array<{ slug: string }>>(`
+      *[_type == "post"] {
+        "slug": slug.current
+      }
+    `);
+    return posts.map(post => post.slug || '').filter(Boolean);
   } catch (error) {
-    console.error('Error reading blog posts directory:', error);
+    console.error('Error fetching post slugs:', error);
     return [];
   }
 }
 
 // Get all blog posts with metadata
-export function getAllPosts(): BlogPost[] {
+export async function getAllPosts(): Promise<BlogPost[]> {
   try {
-    const slugs = getAllPostSlugs();
-    const posts = slugs
-      .map(slug => {
-        const post = getPostBySlug(slug);
-        return post;
-      })
-      .filter(post => post !== null)
-      .sort((a, b) => (a.date < b.date ? 1 : -1)); // Sort by date, newest first
-
-    return posts as BlogPost[];
+    const posts = await client.fetch<any[]>(`
+      *[_type == "post"] | order(date desc) {
+        _id,
+        title,
+        "slug": slug.current,
+        excerpt,
+        date,
+        category,
+        featured,
+        tags,
+        author,
+        content
+      }
+    `);
+    
+    return posts.map(transformPost);
   } catch (error) {
-    console.error('Error getting all posts:', error);
+    console.error('Error fetching all posts:', error);
     return [];
   }
 }
 
 // Get featured posts
-export function getFeaturedPosts(): BlogPost[] {
-  const allPosts = getAllPosts();
-  return allPosts.filter(post => post.featured);
+export async function getFeaturedPosts(): Promise<BlogPost[]> {
+  try {
+    const posts = await client.fetch<any[]>(`
+      *[_type == "post" && featured == true] | order(date desc) {
+        _id,
+        title,
+        "slug": slug.current,
+        excerpt,
+        date,
+        category,
+        featured,
+        tags,
+        author,
+        content
+      }
+    `);
+    
+    return posts.map(transformPost);
+  } catch (error) {
+    console.error('Error fetching featured posts:', error);
+    return [];
+  }
 }
 
 // Get posts by category
-export function getPostsByCategory(category: string): BlogPost[] {
-  const allPosts = getAllPosts();
-  return allPosts.filter(post => post.category.toLowerCase() === category.toLowerCase());
+export async function getPostsByCategory(category: string): Promise<BlogPost[]> {
+  try {
+    const posts = await client.fetch<any[]>(`
+      *[_type == "post" && category == $category] | order(date desc) {
+        _id,
+        title,
+        "slug": slug.current,
+        excerpt,
+        date,
+        category,
+        featured,
+        tags,
+        author,
+        content
+      }
+    `, { category });
+    
+    return posts.map(transformPost);
+  } catch (error) {
+    console.error('Error fetching posts by category:', error);
+    return [];
+  }
 }
 
 // Get all categories
-export function getAllCategories(): string[] {
-  const allPosts = getAllPosts();
-  const categories = new Set(allPosts.map(post => post.category));
-  return Array.from(categories).sort();
+export async function getAllCategories(): Promise<string[]> {
+  try {
+    const categories = await client.fetch<string[]>(`
+      array::unique(*[_type == "post"].category)
+    `);
+    return categories.sort();
+  } catch (error) {
+    console.error('Error fetching categories:', error);
+    return [];
+  }
 }
 
 // Get a single post by slug
-export function getPostBySlug(slug: string): BlogPost | null {
+export async function getPostBySlug(slug: string): Promise<BlogPost | null> {
   try {
-    const fullPath = path.join(postsDirectory, `${slug}.md`);
-    const fileContents = fs.readFileSync(fullPath, 'utf8');
-    const { data, content } = matter(fileContents);
-
-    // Calculate read time (rough estimate: 200 words per minute)
-    const wordCount = content.split(/\s+/).length;
-    const readTime = Math.ceil(wordCount / 200);
-
-    return {
-      slug,
-      id: slug,
-      title: data.title || 'Untitled',
-      excerpt: data.excerpt || '',
-      date: data.date || new Date().toISOString().split('T')[0],
-      readTime: `${readTime} min read`,
-      category: data.category || 'Uncategorized',
-      featured: data.featured || false,
-      tags: data.tags || [],
-      author: data.author || 'Your Name',
-      content,
-    };
+    const post = await client.fetch<any>(`
+      *[_type == "post" && slug.current == $slug][0] {
+        _id,
+        title,
+        "slug": slug.current,
+        excerpt,
+        date,
+        category,
+        featured,
+        tags,
+        author,
+        content
+      }
+    `, { slug });
+    
+    if (!post) return null;
+    return transformPost(post);
   } catch (error) {
-    console.error(`Error reading post ${slug}:`, error);
+    console.error(`Error fetching post ${slug}:`, error);
     return null;
   }
 }
@@ -114,7 +188,7 @@ export function getPostBySlug(slug: string): BlogPost | null {
 // Get post content as HTML
 export async function getPostContent(slug: string): Promise<string> {
   try {
-    const post = getPostBySlug(slug);
+    const post = await getPostBySlug(slug);
     if (!post || !post.content) {
       return '';
     }
@@ -131,15 +205,33 @@ export async function getPostContent(slug: string): Promise<string> {
 }
 
 // Get related posts (by category, excluding current post)
-export function getRelatedPosts(currentSlug: string, limit: number = 3): BlogPost[] {
-  const currentPost = getPostBySlug(currentSlug);
-  if (!currentPost) return [];
+export async function getRelatedPosts(currentSlug: string, limit: number = 3): Promise<BlogPost[]> {
+  try {
+    const currentPost = await getPostBySlug(currentSlug);
+    if (!currentPost) return [];
 
-  const allPosts = getAllPosts();
-  return allPosts
-    .filter(post => 
-      post.slug !== currentSlug && 
-      post.category === currentPost.category
-    )
-    .slice(0, limit);
+    const posts = await client.fetch<any[]>(`
+      *[_type == "post" && slug.current != $currentSlug && category == $category] | order(date desc) [0...$limit] {
+        _id,
+        title,
+        "slug": slug.current,
+        excerpt,
+        date,
+        category,
+        featured,
+        tags,
+        author,
+        content
+      }
+    `, { 
+      currentSlug,
+      category: currentPost.category,
+      limit 
+    });
+    
+    return posts.map(transformPost);
+  } catch (error) {
+    console.error('Error fetching related posts:', error);
+    return [];
+  }
 }
