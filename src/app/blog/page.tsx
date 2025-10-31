@@ -3,12 +3,11 @@ import { getAllCategories, getAllPosts, getFeaturedPosts } from '@/lib/blog';
 import { ArrowRight, Calendar, Clock } from 'lucide-react';
 import Link from 'next/link';
 
-const categories = ['All', ...getAllCategories()];
-
 export default function BlogPage() {
   const allPosts = getAllPosts();
   const featuredPosts = getFeaturedPosts();
   const regularPosts = allPosts.filter(post => !post.featured);
+  const categories = ['All', ...getAllCategories()];
 
   return (
     <BlogWrapper>

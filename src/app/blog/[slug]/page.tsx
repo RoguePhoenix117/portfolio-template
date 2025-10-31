@@ -3,15 +3,16 @@ import { ArrowLeft, BookOpen, Calendar, Clock, Share2 } from 'lucide-react';
 import Link from 'next/link';
 
 interface BlogPostPageProps {
-  params: {
+  params: Promise<{
     slug: string;
-  };
+  }>;
 }
 
 export default async function BlogPostPage({ params }: BlogPostPageProps) {
-  const post = getPostBySlug(params.slug);
-  const content = await getPostContent(params.slug);
-  const relatedPosts = getRelatedPosts(params.slug);
+  const { slug } = await params;
+  const post = getPostBySlug(slug);
+  const content = await getPostContent(slug);
+  const relatedPosts = getRelatedPosts(slug);
 
   if (!post) {
     return (
