@@ -1,66 +1,164 @@
 'use client';
 
-import { Github, Linkedin, Mail, MapPin, Phone, Send, Twitter } from 'lucide-react';
-import { useState } from 'react';
+import { Mail, MapPin, Phone, Send } from 'lucide-react';
+import { getSocialLinks } from '@/lib/config';
+import { loadUserConfig } from '@/lib/config';
+import { UserConfig } from '@/lib/types';
+import { useState, useEffect } from 'react';
 
 export default function Contact() {
+  const [config, setConfig] = useState<UserConfig | null>(null);
+  const [loading, setLoading] = useState(true);
   const [formData, setFormData] = useState({
     name: '',
     email: '',
     subject: '',
     message: '',
+    botcheck: false, // Honeypot field
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitStatus, setSubmitStatus] = useState<'idle' | 'success' | 'error'>('idle');
+  const [errorMessage, setErrorMessage] = useState('');
+
+  useEffect(() => {
+    const loadConfig = async () => {
+      try {
+        const userConfig = await loadUserConfig();
+        setConfig(userConfig);
+      } catch (error) {
+        console.error('Failed to load user configuration:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadConfig();
+  }, []);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const target = e.target;
+    const value = target.type === 'checkbox' ? (target as HTMLInputElement).checked : target.value;
+    const name = target.name;
+
     setFormData({
       ...formData,
-      [e.target.name]: e.target.value,
+      [name]: value,
     });
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setIsSubmitting(true);
     
-    // Simulate form submission
+    // Honeypot check - if botcheck is true, it's a bot
+    if (formData.botcheck) {
+      // Silently fail for bots
+      return;
+    }
+
+    setIsSubmitting(true);
+    setSubmitStatus('idle');
+    setErrorMessage('');
+
     try {
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      setSubmitStatus('success');
-      setFormData({ name: '', email: '', subject: '', message: '' });
+      const provider = config?.contactForm?.provider || 'web3forms';
+      const payload: any = {
+        name: formData.name,
+        email: formData.email,
+        subject: formData.subject,
+        message: formData.message,
+        provider,
+      };
+
+      // Add provider-specific configuration
+      // Note: Web3Forms access key is handled server-side via environment variables for security
+      if (provider === 'generic') {
+        payload.genericApiEndpoint = config?.contactForm?.genericApiEndpoint;
+        payload.genericApiHeaders = config?.contactForm?.genericApiHeaders;
+      }
+
+      const response = await fetch('/api/contact', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(payload),
+      });
+
+      const result = await response.json();
+
+      if (!response.ok) {
+        setSubmitStatus('error');
+        setErrorMessage(result.message || 'Failed to send message. Please try again.');
+      } else {
+        setSubmitStatus('success');
+        setFormData({ name: '', email: '', subject: '', message: '', botcheck: false });
+      }
     } catch (error) {
+      console.error('Form submission error:', error);
       setSubmitStatus('error');
+      setErrorMessage('An unexpected error occurred. Please try again later.');
     } finally {
       setIsSubmitting(false);
     }
   };
 
+  if (loading) {
+    return (
+      <section id="contact" className="py-20 bg-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
+            <p className="text-gray-600">Loading...</p>
+          </div>
+        </div>
+      </section>
+    );
+  }
+
+  if (!config) {
+    return (
+      <section id="contact" className="py-20 bg-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center">
+            <p className="text-red-600">Failed to load contact section configuration</p>
+          </div>
+        </div>
+      </section>
+    );
+  }
+
+  const contactConfig = config.content.contact || {
+    title: 'Get In Touch',
+    subtitle: 'Have a project in mind or want to collaborate?',
+    description: "I'm always interested in new opportunities and exciting projects.",
+    email: config.personal.email.replace('mailto:', ''),
+    phone: '+1 (555) 123-4567',
+    location: config.personal.location,
+    formTitle: 'Send a Message',
+    formDescription: 'Fill out the form below and I\'ll get back to you as soon as possible.',
+  };
+
+  const socialLinks = getSocialLinks(config);
+
   const contactInfo = [
     {
       icon: Mail,
       title: 'Email',
-      value: 'your.email@example.com',
-      href: 'mailto:your.email@example.com',
+      value: contactConfig.email,
+      href: `mailto:${contactConfig.email}`,
     },
     {
       icon: Phone,
       title: 'Phone',
-      value: '+1 (555) 123-4567',
-      href: 'tel:+15551234567',
+      value: contactConfig.phone,
+      href: `tel:${contactConfig.phone.replace(/\s+/g, '')}`,
     },
     {
       icon: MapPin,
       title: 'Location',
-      value: 'San Francisco, CA',
+      value: contactConfig.location,
       href: '#',
     },
-  ];
-
-  const socialLinks = [
-    { name: 'GitHub', href: 'https://github.com/yourusername', icon: Github },
-    { name: 'LinkedIn', href: 'https://linkedin.com/in/yourusername', icon: Linkedin },
-    { name: 'Twitter', href: 'https://twitter.com/yourusername', icon: Twitter },
   ];
 
   return (
@@ -68,11 +166,10 @@ export default function Contact() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-16">
           <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6">
-            Get In Touch
+            {contactConfig.title}
           </h2>
           <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-            Have a project in mind or want to collaborate? I'd love to hear from you. 
-            Let's discuss how we can work together to bring your ideas to life.
+            {contactConfig.subtitle}
           </p>
         </div>
 
@@ -82,9 +179,7 @@ export default function Contact() {
             <div>
               <h3 className="text-2xl font-bold text-gray-900 mb-6">Let's Connect</h3>
               <p className="text-gray-600 mb-8 leading-relaxed">
-                I'm always interested in new opportunities and exciting projects. 
-                Whether you have a question, want to collaborate, or just want to say hi, 
-                feel free to reach out!
+                {contactConfig.description}
               </p>
             </div>
 
@@ -137,7 +232,22 @@ export default function Contact() {
 
           {/* Contact Form */}
           <div>
+            <div className="mb-6">
+              <h3 className="text-2xl font-bold text-gray-900 mb-2">{contactConfig.formTitle}</h3>
+              <p className="text-gray-600">{contactConfig.formDescription}</p>
+            </div>
             <form onSubmit={handleSubmit} className="space-y-6">
+              {/* Honeypot field - hidden from users */}
+              <input
+                type="checkbox"
+                name="botcheck"
+                checked={formData.botcheck}
+                onChange={handleChange}
+                style={{ display: 'none' }}
+                tabIndex={-1}
+                autoComplete="off"
+              />
+
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                 <div>
                   <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-2">
@@ -198,9 +308,13 @@ export default function Contact() {
                   onChange={handleChange}
                   required
                   rows={6}
+                  maxLength={5000}
                   className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors duration-200 resize-none"
                   placeholder="Tell me about your project or idea..."
                 />
+                <p className="text-sm text-gray-500 mt-1">
+                  {formData.message.length} / 5000 characters
+                </p>
               </div>
 
               <button
@@ -229,7 +343,7 @@ export default function Contact() {
 
               {submitStatus === 'error' && (
                 <div className="p-4 bg-red-100 border border-red-400 text-red-700 rounded-lg">
-                  Sorry, there was an error sending your message. Please try again or contact me directly.
+                  {errorMessage || 'Sorry, there was an error sending your message. Please try again or contact me directly.'}
                 </div>
               )}
             </form>

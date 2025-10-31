@@ -14,11 +14,18 @@ A modern, responsive portfolio website template built with Next.js 14, TypeScrip
 ## ⚡ Quick Setup
 
 1. **Clone and install**: `git clone <repo> && cd portfolio-template && npm install`
-2. **Configure**: Edit `public/user.json` with your information
+2. **Create your config**: Copy `public/user.json.example` to `public/user.json` and edit with your information
+   ```bash
+   cp public/user.json.example public/user.json
+   ```
 3. **Add resume**: Place your resume PDF in `public/resume.pdf`
-4. **Run**: `npm run dev` and visit `http://localhost:3001`
+4. **Set up contact form**: See [CONTACT_FORM_SETUP.md](CONTACT_FORM_SETUP.md) for Web3Forms or generic API setup
+5. **Run**: `npm run dev` and visit `http://localhost:3001`
+
+> ⚠️ **Important Security Note**: The `public/user.json` file is excluded from Git (via `.gitignore`) to protect your personal information. Always create it from `user.json.example` and never commit your actual `user.json` file to the repository.
 
 > 📖 **Full Configuration Guide**: See [CONFIGURATION.md](CONFIGURATION.md) for detailed setup instructions
+> 🔒 **Security Guide**: See [SECURITY.md](SECURITY.md) for security features and recommendations
 
 ## ⭐ Features
 
@@ -27,9 +34,12 @@ A modern, responsive portfolio website template built with Next.js 14, TypeScrip
 - ⚡ **Fast Performance** - Built with Next.js 14 and optimized for speed
 - 📝 **Blog System** - Markdown-based blog with categories and tags
 - 💼 **Project Showcase** - Display your projects with live demos
+- 📧 **Contact Form** - Integrated with Web3Forms (250 free submissions/month) or custom API
+- 🔒 **Security Features** - Rate limiting, honeypot protection, security headers
 - 🔍 **SEO Optimized** - Meta tags and structured data
 - 🎯 **Type Safe** - Built with TypeScript for better development experience
 - 🚀 **Easy Deployment** - One-click deployment to Vercel/Netlify
+- ⚙️ **Fully Configurable** - Customize everything via JSON without touching code
 
 ## Features
 
@@ -38,9 +48,11 @@ A modern, responsive portfolio website template built with Next.js 14, TypeScrip
 - 🎨 **Beautiful Design**: Clean, modern UI with smooth animations
 - 📝 **Blog System**: Built-in blog functionality with sample posts
 - 💼 **Project Showcase**: Display your projects with live demos and GitHub links
-- 📧 **Contact Form**: Working contact form with validation
+- 📧 **Contact Form**: Working contact form with Web3Forms integration (250 free submissions/month) or custom API
+- 🔒 **Security**: Rate limiting, honeypot protection, security headers, input validation
 - 🔍 **SEO Optimized**: Meta tags and structured data for better search visibility
 - ⚡ **Performance**: Fast loading with optimized images and code splitting
+- ⚙️ **Fully Configurable**: About section, Contact section, and all content customizable via JSON
 
 ## Sections
 
@@ -281,6 +293,41 @@ src/
 ## License
 
 This project is open source and available under the [MIT License](LICENSE).
+
+## Security
+
+The template includes built-in security features:
+
+- ✅ **Security Headers** - X-Content-Type-Options, X-Frame-Options, X-XSS-Protection
+- ✅ **Rate Limiting** - Contact form is rate-limited (5 submissions per 15 minutes per IP)
+- ✅ **Honeypot Protection** - Hidden bot detection field
+- ✅ **Input Validation** - Server-side validation for all form inputs
+- ✅ **DDoS Protection** - Automatic on Vercel/Netlify deployments
+
+For detailed security information, see [SECURITY.md](SECURITY.md)
+
+## Contact Form Setup
+
+The contact form supports multiple providers:
+
+1. **Web3Forms** (Recommended)
+   - Free tier: 250 submissions/month
+   - No backend required
+   - Easy setup with access key via environment variable
+   - **⚠️ Access key must be in `.env.local` (not in user.json)**
+
+2. **Generic API** (Custom integrations)
+   - Works with any API endpoint
+   - Custom headers supported
+
+For detailed setup instructions, see [CONTACT_FORM_SETUP.md](CONTACT_FORM_SETUP.md)
+
+## Documentation
+
+- 📖 [CONFIGURATION.md](CONFIGURATION.md) - Complete configuration guide
+- 📧 [CONTACT_FORM_SETUP.md](CONTACT_FORM_SETUP.md) - Contact form setup instructions
+- 🔒 [SECURITY.md](SECURITY.md) - Security features and recommendations
+- 📝 [BLOG_GUIDE.md](BLOG_GUIDE.md) - Blog management guide
 
 ## Support
 

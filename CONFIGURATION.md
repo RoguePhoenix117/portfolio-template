@@ -4,11 +4,20 @@ This portfolio template now supports easy personalization through a JSON configu
 
 ## Quick Start
 
-1. **Edit the configuration file**: Open `public/user.json` in the project directory
-2. **Update your personal information**: Replace the placeholder values with your actual information
-3. **Add your resume**: Place your resume PDF file in the `public` folder as `resume.pdf`
-4. **Run the update script**: Execute `npm run update-package` to update package.json with your repository information
-5. **Start the development server**: Run `npm run dev` to see your changes
+1. **Create your configuration file**: Copy the example template to create your own configuration
+   ```bash
+   cp public/user.json.example public/user.json
+   ```
+2. **Edit the configuration file**: Open `public/user.json` in the project directory
+3. **Update your personal information**: Replace the placeholder values with your actual information
+4. **Add your resume**: Place your resume PDF file in the `public` folder as `resume.pdf`
+5. **Run the update script**: Execute `npm run update-package` to update package.json with your repository information
+6. **Start the development server**: Run `npm run dev` to see your changes
+
+> ⚠️ **Security Warning**: The `public/user.json` file contains personal information (email addresses, social media links, etc.) and is **automatically excluded from Git** via `.gitignore` to protect your privacy. 
+> - Always create `user.json` by copying from `user.json.example`
+> - Never commit your actual `user.json` file to the repository
+> - If you've already committed it, remove it from Git history using `git rm --cached public/user.json`
 
 ## Configuration Structure
 
@@ -33,7 +42,7 @@ The `public/user.json` file contains the following sections:
   "social": {
     "github": "https://github.com/yourusername",
     "linkedin": "https://linkedin.com/in/yourusername",
-    "twitter": "https://twitter.com/yourusername",
+    "twitter": "https://x.com/yourusername",
     "email": "mailto:your.email@example.com"
   }
 }
@@ -299,13 +308,152 @@ The system automatically:
 - Filters featured content
 - Generates categories and tags
 
+### About Section Configuration
+
+The About section is now fully configurable via `user.json`. You can customize:
+
+```json
+{
+  "content": {
+    "about": {
+      "title": "About Me",
+      "subtitle": "I'm a passionate developer with a love for creating innovative solutions and continuous learning.",
+      "story": [
+        "First paragraph of your story...",
+        "Second paragraph of your story...",
+        "Third paragraph of your story..."
+      ],
+      "stats": [
+        {
+          "label": "Projects Completed",
+          "value": "50+",
+          "color": "blue"
+        },
+        {
+          "label": "Years Experience",
+          "value": "5+",
+          "color": "purple"
+        },
+        {
+          "label": "Happy Clients",
+          "value": "100+",
+          "color": "green"
+        },
+        {
+          "label": "Support Available",
+          "value": "24/7",
+          "color": "orange"
+        }
+      ],
+      "skills": [
+        {
+          "name": "Frontend Development",
+          "description": "React, Next.js, TypeScript, Tailwind CSS"
+        },
+        {
+          "name": "Backend Development",
+          "description": "Node.js, Express, Python, PostgreSQL"
+        }
+      ],
+      "ctaText": "Let's Work Together"
+    }
+  }
+}
+```
+
+**Stats Color Options**: `blue`, `purple`, `green`, `orange`
+
+### Contact Section Configuration
+
+The Contact section is fully configurable, including form setup:
+
+```json
+{
+  "content": {
+    "contact": {
+      "title": "Get In Touch",
+      "subtitle": "Have a project in mind or want to collaborate?",
+      "description": "I'm always interested in new opportunities...",
+      "email": "your.email@example.com",
+      "phone": "+1 (555) 123-4567",
+      "location": "San Francisco, CA",
+      "formTitle": "Send a Message",
+      "formDescription": "Fill out the form below and I'll get back to you as soon as possible."
+    }
+  },
+  "contactForm": {
+    "provider": "web3forms"
+  }
+}
+```
+
+**Contact Form Setup:**
+
+The template supports multiple form submission providers:
+
+1. **Web3Forms** (Recommended - Free tier: 250 submissions/month)
+   - Get your access key from [Web3Forms.com](https://web3forms.com/)
+   - **⚠️ IMPORTANT:** Store your access key in environment variable `WEB3FORMS_ACCESS_KEY` (NOT in user.json)
+   - See [CONTACT_FORM_SETUP.md](CONTACT_FORM_SETUP.md) for detailed instructions
+
+2. **Generic API** (For custom integrations)
+   ```json
+   {
+     "contactForm": {
+       "provider": "generic",
+       "genericApiEndpoint": "https://your-api-endpoint.com/submit",
+       "genericApiHeaders": {
+         "Authorization": "Bearer YOUR_API_KEY"
+       }
+     }
+   }
+   ```
+
+**For detailed contact form setup instructions, see [CONTACT_FORM_SETUP.md](CONTACT_FORM_SETUP.md)**
+
+## Security Features
+
+The template includes built-in security features:
+
+### Built-in Protections
+
+- **Security Headers**: Configured in `next.config.ts` (X-Content-Type-Options, X-Frame-Options, etc.)
+- **Rate Limiting**: Contact form is rate-limited (5 submissions per 15 minutes per IP)
+- **Honeypot Protection**: Hidden bot detection field in contact form
+- **Input Validation**: Server-side validation for all form inputs
+
+### Security Documentation
+
+For comprehensive security information:
+- See [SECURITY.md](SECURITY.md) for detailed security guide
+- See [CONTACT_FORM_SETUP.md](CONTACT_FORM_SETUP.md) for form security features
+
 ## Next Steps
 
-1. Customize your `public/user.json` file with your information
-2. Add your resume PDF to the `public` folder as `resume.pdf`
-3. Add your projects to the `content/projects/` directory
-4. Add your blog posts to the `content/blog/` directory
-5. Update the styling to match your brand
-6. Add more configurable sections as needed
+1. **Create your configuration**: Copy `public/user.json.example` to `public/user.json` if you haven't already
+2. Customize your `public/user.json` file with your information
+3. Add your resume PDF to the `public` folder as `resume.pdf`
+4. Add your projects to the `content/projects/` directory
+5. Add your blog posts to the `content/blog/` directory
+6. Update the styling to match your brand
+7. Add more configurable sections as needed
 
 For more advanced customization, you can extend the configuration structure and update the corresponding TypeScript types and components.
+
+---
+
+## Security Best Practices
+
+**Important**: The `public/user.json` file contains personal information and should never be committed to your repository.
+
+### ✅ Do:
+- Always create `user.json` by copying from `user.json.example`
+- Keep your `user.json` file local and never commit it
+- Use environment variables for sensitive data like API keys (see [CONTACT_FORM_SETUP.md](CONTACT_FORM_SETUP.md))
+
+### ❌ Don't:
+- Commit `public/user.json` to Git
+- Share your `user.json` file publicly
+- Put sensitive API keys in `user.json` (use environment variables instead)
+
+The template automatically excludes `public/user.json` from Git via `.gitignore` to protect your privacy.

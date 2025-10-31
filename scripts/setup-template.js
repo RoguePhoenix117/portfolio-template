@@ -28,7 +28,7 @@ async function setupTemplate() {
     const email = await question('What is your email? ');
     const github = await question('What is your GitHub username? ');
     const linkedin = await question('What is your LinkedIn username? (optional) ');
-    const twitter = await question('What is your Twitter username? (optional) ');
+    const twitter = await question('What is your X username? (optional) ');
 
     console.log('\n📝 Updating files...');
 
