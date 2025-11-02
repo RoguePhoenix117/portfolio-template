@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 
 /**
- * Middleware to protect the Sanity Studio route
+ * Proxy to protect the Sanity Studio route
  * 
  * Security options:
  * 1. Password protection (recommended for production)
@@ -15,7 +15,7 @@ import type { NextRequest } from 'next/server';
  * - STUDIO_DEV_ONLY: "true" to block in production (optional)
  */
 
-export function middleware(request: NextRequest) {
+export function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
   // Only protect /studio routes
@@ -150,7 +150,6 @@ export function middleware(request: NextRequest) {
   if (allowedIPs && allowedIPs.length > 0) {
     const clientIP = request.headers.get('x-forwarded-for')?.split(',')[0]?.trim() ||
                      request.headers.get('x-real-ip') ||
-                     request.ip ||
                      'unknown';
 
     if (!allowedIPs.includes(clientIP)) {
