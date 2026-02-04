@@ -1,8 +1,8 @@
 'use client';
 
-import { Code, Database, Globe, Smartphone, Users, Zap } from 'lucide-react';
 import { loadUserConfig } from '@/lib/config';
 import { UserConfig } from '@/lib/types';
+import { Code, Database, Globe, Smartphone, Users, Zap } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
 // Map skill names to icons
@@ -43,11 +43,11 @@ export default function About() {
 
   if (loading) {
     return (
-      <section id="about" className="py-20 bg-white">
+      <section id="about" className="py-20 bg-white dark:bg-gray-900">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center">
             <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
-            <p className="text-gray-600">Loading...</p>
+            <p className="text-gray-600 dark:text-gray-400">Loading...</p>
           </div>
         </div>
       </section>
@@ -56,7 +56,7 @@ export default function About() {
 
   if (!config || !config.content.about) {
     return (
-      <section id="about" className="py-20 bg-white">
+      <section id="about" className="py-20 bg-white dark:bg-gray-900">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center">
             <p className="text-red-600">Failed to load about section configuration</p>
@@ -69,13 +69,13 @@ export default function About() {
   const aboutConfig = config.content.about;
 
   return (
-    <section id="about" className="py-20 bg-white">
+    <section id="about" className="py-20 bg-white dark:bg-gray-900">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-16">
-          <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6">
+          <h2 className="text-4xl md:text-5xl font-bold text-gray-900 dark:text-white mb-6">
             {aboutConfig.title}
           </h2>
-          <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+          <p className="text-xl text-gray-600 dark:text-gray-300 max-w-3xl mx-auto">
             {aboutConfig.subtitle}
           </p>
         </div>
@@ -85,7 +85,7 @@ export default function About() {
           <div className="space-y-6">
             <div className="prose prose-lg max-w-none">
               {aboutConfig.story.map((paragraph, index) => (
-                <p key={index} className="text-gray-600 leading-relaxed">
+                <p key={index} className="text-gray-600 dark:text-gray-300 leading-relaxed">
                   {paragraph}
                 </p>
               ))}
@@ -98,7 +98,7 @@ export default function About() {
                   <div className={`text-3xl font-bold ${colorMap[stat.color]} mb-2`}>
                     {stat.value}
                   </div>
-                  <div className="text-gray-600">{stat.label}</div>
+                  <div className="text-gray-600 dark:text-gray-400">{stat.label}</div>
                 </div>
               ))}
             </div>
@@ -106,26 +106,26 @@ export default function About() {
 
           {/* Right side - Skills */}
           <div className="space-y-6">
-            <h3 className="text-2xl font-bold text-gray-900 mb-8">Skills & Expertise</h3>
+            <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-8">Skills & Expertise</h3>
             <div className="grid grid-cols-1 gap-6">
               {aboutConfig.skills.map((skill, index) => {
                 const Icon = skillIconMap[skill.name] || Code;
                 return (
                   <div
                     key={index}
-                    className="p-6 bg-gray-50 rounded-xl hover:bg-gray-100 transition-colors duration-300 group"
+                    className="p-6 bg-gray-50 dark:bg-gray-800 rounded-xl hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors duration-300 group"
                   >
                     <div className="flex items-start space-x-4">
                       <div className="flex-shrink-0">
-                        <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center group-hover:bg-blue-200 transition-colors duration-300">
-                          <Icon className="w-6 h-6 text-blue-600" />
+                        <div className="w-12 h-12 bg-blue-100 dark:bg-blue-900/50 rounded-lg flex items-center justify-center group-hover:bg-blue-200 dark:group-hover:bg-blue-800/50 transition-colors duration-300">
+                          <Icon className="w-6 h-6 text-blue-600 dark:text-blue-400" />
                         </div>
                       </div>
                       <div className="flex-1">
-                        <h4 className="text-lg font-semibold text-gray-900 mb-2">
+                        <h4 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">
                           {skill.name}
                         </h4>
-                        <p className="text-gray-600">
+                        <p className="text-gray-600 dark:text-gray-300">
                           {skill.description}
                         </p>
                       </div>
@@ -141,7 +141,7 @@ export default function About() {
         <div className="text-center mt-16">
           <a
             href="#contact"
-            className="inline-flex items-center px-8 py-4 bg-gradient-to-r from-blue-600 to-purple-600 text-white font-semibold rounded-lg hover:from-blue-700 hover:to-purple-700 transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl"
+            className="inline-flex items-center px-8 py-4 bg-gradient-to-r from-blue-600 to-purple-600 dark:from-blue-500 dark:to-purple-500 text-white font-semibold rounded-lg hover:from-blue-700 hover:to-purple-700 dark:hover:from-blue-600 dark:hover:to-purple-600 transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl"
           >
             {aboutConfig.ctaText}
           </a>

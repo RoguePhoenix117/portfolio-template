@@ -1,10 +1,11 @@
 'use client';
 
-import { getNavigationItems, getSocialLinks, loadUserConfig } from '@/lib/config';
+import { getNavigationItems, loadUserConfig } from '@/lib/config';
 import { UserConfig } from '@/lib/types';
 import { Menu, X } from 'lucide-react';
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
+import ThemeToggle from './ThemeToggle';
 
 export default function Navigation() {
   const [isOpen, setIsOpen] = useState(false);
@@ -28,7 +29,7 @@ export default function Navigation() {
 
   if (loading) {
     return (
-      <nav className="bg-white shadow-sm border-b border-gray-200 sticky top-0 z-50">
+      <nav className="bg-white shadow-sm border-b border-gray-200 dark:bg-gray-900 dark:border-gray-800 sticky top-0 z-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
             <div className="w-32 h-6 bg-gray-200 rounded animate-pulse"></div>
@@ -45,7 +46,7 @@ export default function Navigation() {
 
   if (!config) {
     return (
-      <nav className="bg-white shadow-sm border-b border-gray-200 sticky top-0 z-50">
+      <nav className="bg-white shadow-sm border-b border-gray-200 dark:bg-gray-900 dark:border-gray-800 sticky top-0 z-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
             <div className="text-red-600">Failed to load navigation</div>
@@ -56,10 +57,9 @@ export default function Navigation() {
   }
 
   const navItems = getNavigationItems(config);
-  const socialLinks = getSocialLinks(config);
 
   return (
-    <nav className="bg-white shadow-sm border-b border-gray-200 sticky top-0 z-50">
+    <nav className="bg-white shadow-sm border-b border-gray-200 dark:bg-gray-900 dark:border-gray-800 sticky top-0 z-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
           {/* Logo */}
@@ -67,7 +67,7 @@ export default function Navigation() {
             <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center">
               <span className="text-white font-bold text-lg">{config.branding.logoInitial}</span>
             </div>
-            <span className="font-bold text-xl text-gray-900">{config.branding.logoText}</span>
+            <span className="font-bold text-xl text-gray-900 dark:text-white">{config.branding.logoText}</span>
           </Link>
 
           {/* Desktop Navigation */}
@@ -76,73 +76,45 @@ export default function Navigation() {
               <Link
                 key={item.name}
                 href={item.href}
-                className="text-gray-600 hover:text-blue-600 transition-colors duration-200 font-medium"
+                className="text-gray-600 hover:text-blue-600 dark:text-gray-300 dark:hover:text-blue-400 transition-colors duration-200 font-medium"
               >
                 {item.name}
               </Link>
             ))}
           </div>
 
-          {/* Social Links */}
-          <div className="hidden md:flex items-center space-x-4">
-            {socialLinks.map((social) => {
-              const Icon = social.icon;
-              return (
-                <a
-                  key={social.name}
-                  href={social.href}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-gray-400 hover:text-blue-600 transition-colors duration-200"
-                  aria-label={social.name}
-                >
-                  <Icon size={20} />
-                </a>
-              );
-            })}
+          {/* Theme toggle */}
+          <div className="hidden md:flex items-center">
+            <ThemeToggle />
           </div>
 
-          {/* Mobile menu button */}
-          <button
-            onClick={() => setIsOpen(!isOpen)}
-            className="md:hidden p-2 rounded-md text-gray-600 hover:text-blue-600 hover:bg-gray-100 transition-colors duration-200"
-            aria-label="Toggle menu"
-          >
-            {isOpen ? <X size={24} /> : <Menu size={24} />}
-          </button>
+          {/* Mobile: theme + menu button */}
+          <div className="md:hidden flex items-center gap-2">
+            <ThemeToggle />
+            <button
+              onClick={() => setIsOpen(!isOpen)}
+              className="p-2 rounded-md text-gray-600 hover:text-blue-600 hover:bg-gray-100 dark:text-gray-300 dark:hover:text-blue-400 dark:hover:bg-gray-800 transition-colors duration-200"
+              aria-label="Toggle menu"
+            >
+              {isOpen ? <X size={24} /> : <Menu size={24} />}
+            </button>
+          </div>
         </div>
 
         {/* Mobile Navigation */}
         {isOpen && (
           <div className="md:hidden">
-            <div className="px-2 pt-2 pb-3 space-y-1 bg-white border-t border-gray-200">
+            <div className="px-2 pt-2 pb-3 space-y-1 bg-white dark:bg-gray-900 border-t border-gray-200 dark:border-gray-800">
               {navItems.map((item) => (
                 <Link
                   key={item.name}
                   href={item.href}
-                  className="block px-3 py-2 text-gray-600 hover:text-blue-600 hover:bg-gray-50 rounded-md transition-colors duration-200 font-medium"
+                  className="block px-3 py-2 text-gray-600 hover:text-blue-600 hover:bg-gray-50 dark:text-gray-300 dark:hover:text-blue-400 dark:hover:bg-gray-800 rounded-md transition-colors duration-200 font-medium"
                   onClick={() => setIsOpen(false)}
                 >
                   {item.name}
                 </Link>
               ))}
-              <div className="flex items-center space-x-4 px-3 py-2">
-                {socialLinks.map((social) => {
-                  const Icon = social.icon;
-                  return (
-                    <a
-                      key={social.name}
-                      href={social.href}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="text-gray-400 hover:text-blue-600 transition-colors duration-200"
-                      aria-label={social.name}
-                    >
-                      <Icon size={20} />
-                    </a>
-                  );
-                })}
-              </div>
             </div>
           </div>
         )}

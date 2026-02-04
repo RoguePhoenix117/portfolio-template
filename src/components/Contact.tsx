@@ -1,10 +1,9 @@
 'use client';
 
-import { Mail, MapPin, Phone, Send } from 'lucide-react';
-import { getSocialLinks } from '@/lib/config';
-import { loadUserConfig } from '@/lib/config';
+import { getSocialLinks, loadUserConfig } from '@/lib/config';
 import { UserConfig } from '@/lib/types';
-import { useState, useEffect } from 'react';
+import { Mail, MapPin, Phone, Send } from 'lucide-react';
+import { useEffect, useState } from 'react';
 
 export default function Contact() {
   const [config, setConfig] = useState<UserConfig | null>(null);
@@ -104,11 +103,11 @@ export default function Contact() {
 
   if (loading) {
     return (
-      <section id="contact" className="py-20 bg-white">
+      <section id="contact" className="py-20 bg-white dark:bg-gray-900">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center">
             <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
-            <p className="text-gray-600">Loading...</p>
+            <p className="text-gray-600 dark:text-gray-400">Loading...</p>
           </div>
         </div>
       </section>
@@ -117,7 +116,7 @@ export default function Contact() {
 
   if (!config) {
     return (
-      <section id="contact" className="py-20 bg-white">
+      <section id="contact" className="py-20 bg-white dark:bg-gray-900">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center">
             <p className="text-red-600">Failed to load contact section configuration</p>
@@ -162,13 +161,13 @@ export default function Contact() {
   ];
 
   return (
-    <section id="contact" className="py-20 bg-white">
+    <section id="contact" className="py-20 bg-white dark:bg-gray-900">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-16">
-          <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6">
+          <h2 className="text-4xl md:text-5xl font-bold text-gray-900 dark:text-white mb-6">
             {contactConfig.title}
           </h2>
-          <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+          <p className="text-xl text-gray-600 dark:text-gray-300 max-w-3xl mx-auto">
             {contactConfig.subtitle}
           </p>
         </div>
@@ -177,8 +176,8 @@ export default function Contact() {
           {/* Contact Information */}
           <div className="space-y-8">
             <div>
-              <h3 className="text-2xl font-bold text-gray-900 mb-6">Let's Connect</h3>
-              <p className="text-gray-600 mb-8 leading-relaxed">
+              <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-6">Let's Connect</h3>
+              <p className="text-gray-600 dark:text-gray-300 mb-8 leading-relaxed">
                 {contactConfig.description}
               </p>
             </div>
@@ -191,16 +190,16 @@ export default function Contact() {
                   <a
                     key={info.title}
                     href={info.href}
-                    className="flex items-center space-x-4 p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors duration-200 group"
+                    className="flex items-center space-x-4 p-4 bg-gray-50 dark:bg-gray-800 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors duration-200 group"
                   >
                     <div className="flex-shrink-0">
-                      <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center group-hover:bg-blue-200 transition-colors duration-200">
-                        <Icon className="w-6 h-6 text-blue-600" />
+                      <div className="w-12 h-12 bg-blue-100 dark:bg-blue-900/50 rounded-lg flex items-center justify-center group-hover:bg-blue-200 dark:group-hover:bg-blue-800/50 transition-colors duration-200">
+                        <Icon className="w-6 h-6 text-blue-600 dark:text-blue-400" />
                       </div>
                     </div>
                     <div>
-                      <h4 className="font-semibold text-gray-900">{info.title}</h4>
-                      <p className="text-gray-600">{info.value}</p>
+                      <h4 className="font-semibold text-gray-900 dark:text-white">{info.title}</h4>
+                      <p className="text-gray-600 dark:text-gray-300">{info.value}</p>
                     </div>
                   </a>
                 );
@@ -209,7 +208,7 @@ export default function Contact() {
 
             {/* Social Links */}
             <div>
-              <h4 className="text-lg font-semibold text-gray-900 mb-4">Follow Me</h4>
+              <h4 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">Follow Me</h4>
               <div className="flex space-x-4">
                 {socialLinks.map((social) => {
                   const Icon = social.icon;
@@ -219,10 +218,10 @@ export default function Contact() {
                       href={social.href}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="w-12 h-12 bg-gray-100 rounded-lg flex items-center justify-center hover:bg-blue-100 transition-colors duration-200 group"
+                      className="w-12 h-12 bg-gray-100 dark:bg-gray-800 rounded-lg flex items-center justify-center hover:bg-blue-100 dark:hover:bg-blue-900/50 transition-colors duration-200 group"
                       aria-label={social.name}
                     >
-                      <Icon className="w-6 h-6 text-gray-600 group-hover:text-blue-600" />
+                      <Icon className="w-6 h-6 text-gray-600 dark:text-gray-400 group-hover:text-blue-600 dark:group-hover:text-blue-400" />
                     </a>
                   );
                 })}
@@ -233,8 +232,8 @@ export default function Contact() {
           {/* Contact Form */}
           <div>
             <div className="mb-6">
-              <h3 className="text-2xl font-bold text-gray-900 mb-2">{contactConfig.formTitle}</h3>
-              <p className="text-gray-600">{contactConfig.formDescription}</p>
+              <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">{contactConfig.formTitle}</h3>
+              <p className="text-gray-600 dark:text-gray-300">{contactConfig.formDescription}</p>
             </div>
             <form onSubmit={handleSubmit} className="space-y-6">
               {/* Honeypot field - hidden from users */}
@@ -250,7 +249,7 @@ export default function Contact() {
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                 <div>
-                  <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-2">
+                  <label htmlFor="name" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                     Name *
                   </label>
                   <input
@@ -260,12 +259,12 @@ export default function Contact() {
                     value={formData.name}
                     onChange={handleChange}
                     required
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors duration-200"
+                    className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 dark:bg-gray-800 dark:text-white rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors duration-200"
                     placeholder="Your name"
                   />
                 </div>
                 <div>
-                  <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">
+                  <label htmlFor="email" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                     Email *
                   </label>
                   <input
@@ -275,14 +274,14 @@ export default function Contact() {
                     value={formData.email}
                     onChange={handleChange}
                     required
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors duration-200"
+                    className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 dark:bg-gray-800 dark:text-white rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors duration-200"
                     placeholder="your.email@example.com"
                   />
                 </div>
               </div>
 
               <div>
-                <label htmlFor="subject" className="block text-sm font-medium text-gray-700 mb-2">
+                <label htmlFor="subject" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                   Subject *
                 </label>
                 <input
@@ -292,13 +291,13 @@ export default function Contact() {
                   value={formData.subject}
                   onChange={handleChange}
                   required
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors duration-200"
+                  className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 dark:bg-gray-800 dark:text-white rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors duration-200"
                   placeholder="What's this about?"
                 />
               </div>
 
               <div>
-                <label htmlFor="message" className="block text-sm font-medium text-gray-700 mb-2">
+                <label htmlFor="message" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                   Message *
                 </label>
                 <textarea
@@ -309,10 +308,10 @@ export default function Contact() {
                   required
                   rows={6}
                   maxLength={5000}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors duration-200 resize-none"
+                  className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 dark:bg-gray-800 dark:text-white rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors duration-200 resize-none"
                   placeholder="Tell me about your project or idea..."
                 />
-                <p className="text-sm text-gray-500 mt-1">
+                <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
                   {formData.message.length} / 5000 characters
                 </p>
               </div>
@@ -336,13 +335,13 @@ export default function Contact() {
               </button>
 
               {submitStatus === 'success' && (
-                <div className="p-4 bg-green-100 border border-green-400 text-green-700 rounded-lg">
+                <div className="p-4 bg-green-100 dark:bg-green-900/30 border border-green-400 dark:border-green-600 text-green-700 dark:text-green-300 rounded-lg">
                   Thank you! Your message has been sent successfully. I'll get back to you soon.
                 </div>
               )}
 
               {submitStatus === 'error' && (
-                <div className="p-4 bg-red-100 border border-red-400 text-red-700 rounded-lg">
+                <div className="p-4 bg-red-100 dark:bg-red-900/30 border border-red-400 dark:border-red-600 text-red-700 dark:text-red-300 rounded-lg">
                   {errorMessage || 'Sorry, there was an error sending your message. Please try again or contact me directly.'}
                 </div>
               )}

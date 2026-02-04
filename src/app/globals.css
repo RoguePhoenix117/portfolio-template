@@ -1,5 +1,17 @@
 @import "tailwindcss";
 
+/* Dark mode: manual (data-theme) + system (prefers-color-scheme) */
+@custom-variant dark {
+  &:where([data-theme="dark"], [data-theme="dark"] *) {
+    @slot;
+  }
+  @media (prefers-color-scheme: dark) {
+    &:where(:not([data-theme] *)) {
+      @slot;
+    }
+  }
+}
+
 /* Custom scrollbar */
 ::-webkit-scrollbar {
   width: 8px;
