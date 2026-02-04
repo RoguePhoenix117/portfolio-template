@@ -2,8 +2,12 @@
 
 import { getSocialLinks, loadUserConfig } from '@/lib/config';
 import { UserConfig } from '@/lib/types';
+import HCaptcha from '@hcaptcha/react-hcaptcha';
 import { Mail, MapPin, Phone, Send } from 'lucide-react';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
+
+// Web3Forms free tier hCaptcha site key (see https://docs.web3forms.com/getting-started/customizations/spam-protection/hcaptcha)
+const HCAPTCHA_SITEKEY = '50b2fe65-b00b-4b9e-ad62-3ba471098be2';
 
 export default function Contact() {
   const [config, setConfig] = useState<UserConfig | null>(null);
@@ -18,6 +22,8 @@ export default function Contact() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitStatus, setSubmitStatus] = useState<'idle' | 'success' | 'error'>('idle');
   const [errorMessage, setErrorMessage] = useState('');
+  const [hCaptchaToken, setHCaptchaToken] = useState<string | null>(null);
+  const hCaptchaRef = useRef<HCaptcha>(null);
 
   useEffect(() => {
     const loadConfig = async () => {
@@ -47,10 +53,16 @@ export default function Contact() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     // Honeypot check - if botcheck is true, it's a bot
     if (formData.botcheck) {
-      // Silently fail for bots
+      return;
+    }
+
+    const provider = config?.contactForm?.provider || 'web3forms';
+    if (provider === 'web3forms' && !hCaptchaToken) {
+      setSubmitStatus('error');
+      setErrorMessage('Please complete the captcha verification before sending.');
       return;
     }
 
@@ -59,8 +71,7 @@ export default function Contact() {
     setErrorMessage('');
 
     try {
-      const provider = config?.contactForm?.provider || 'web3forms';
-      const payload: any = {
+      const payload: Record<string, unknown> = {
         name: formData.name,
         email: formData.email,
         subject: formData.subject,
@@ -68,9 +79,9 @@ export default function Contact() {
         provider,
       };
 
-      // Add provider-specific configuration
-      // Note: Web3Forms access key is handled server-side via environment variables for security
-      if (provider === 'generic') {
+      if (provider === 'web3forms') {
+        payload['h-captcha-response'] = hCaptchaToken;
+      } else if (provider === 'generic') {
         payload.genericApiEndpoint = config?.contactForm?.genericApiEndpoint;
         payload.genericApiHeaders = config?.contactForm?.genericApiHeaders;
       }
@@ -91,6 +102,8 @@ export default function Contact() {
       } else {
         setSubmitStatus('success');
         setFormData({ name: '', email: '', subject: '', message: '', botcheck: false });
+        setHCaptchaToken(null);
+        hCaptchaRef.current?.resetCaptcha();
       }
     } catch (error) {
       console.error('Form submission error:', error);
@@ -315,6 +328,18 @@ export default function Contact() {
                   {formData.message.length} / 5000 characters
                 </p>
               </div>
+
+              {config?.contactForm?.provider !== 'generic' && (
+                <div className="flex flex-wrap items-center gap-2">
+                  <HCaptcha
+                    ref={hCaptchaRef}
+                    sitekey={HCAPTCHA_SITEKEY}
+                    reCaptchaCompat={false}
+                    onVerify={(token: string) => setHCaptchaToken(token)}
+                    onExpire={() => setHCaptchaToken(null)}
+                  />
+                </div>
+              )}
 
               <button
                 type="submit"

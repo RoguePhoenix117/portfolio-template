@@ -57,7 +57,16 @@ export async function POST(request: NextRequest) {
     }
 
     const body = await request.json();
-    const { name, email, subject, message, provider = 'web3forms', genericApiEndpoint, genericApiHeaders } = body;
+    const {
+      name,
+      email,
+      subject,
+      message,
+      provider = 'web3forms',
+      genericApiEndpoint,
+      genericApiHeaders,
+      'h-captcha-response': hCaptchaResponse,
+    } = body;
 
     // Validate required fields
     if (!name || !email || !subject || !message) {
@@ -88,17 +97,25 @@ export async function POST(request: NextRequest) {
     let result: any;
 
     if (provider === 'web3forms') {
-      // Get access key from environment variables only (never from user.json for security)
-      const web3formsAccessKey = process.env.WEB3FORMS_ACCESS_KEY;
-      
+      // Prefer server-side env var; fallback to NEXT_PUBLIC_ for backward compatibility
+      const web3formsAccessKey =
+        process.env.WEB3FORMS_ACCESS_KEY || process.env.NEXT_PUBLIC_WEB3FORMS_ACCESS_KEY;
+
       if (!web3formsAccessKey) {
         return NextResponse.json(
-          { error: 'Web3Forms access key not configured', message: 'Please configure your Web3Forms access key as an environment variable (WEB3FORMS_ACCESS_KEY). See CONTACT_FORM_SETUP.md for instructions.' },
+          { error: 'Web3Forms access key not configured', message: 'Please configure WEB3FORMS_ACCESS_KEY (or NEXT_PUBLIC_WEB3FORMS_ACCESS_KEY) in your environment. See CONTACT_FORM_SETUP.md for instructions.' },
           { status: 500 }
         );
       }
 
-      // Web3Forms integration
+      if (!hCaptchaResponse || typeof hCaptchaResponse !== 'string') {
+        return NextResponse.json(
+          { error: 'Captcha required', message: 'Please complete the captcha verification.' },
+          { status: 400 }
+        );
+      }
+
+      // Web3Forms integration (includes hCaptcha token for spam protection)
       const web3formsPayload = {
         access_key: web3formsAccessKey,
         name,
@@ -106,7 +123,8 @@ export async function POST(request: NextRequest) {
         subject,
         message,
         from_name: name,
-        botcheck: false, // Honeypot field (already handled client-side)
+        botcheck: false,
+        'h-captcha-response': hCaptchaResponse,
       };
 
       response = await fetch('https://api.web3forms.com/submit', {
