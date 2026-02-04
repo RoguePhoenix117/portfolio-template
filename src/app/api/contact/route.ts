@@ -135,13 +135,26 @@ export async function POST(request: NextRequest) {
         body: JSON.stringify(web3formsPayload),
       });
 
-      result = await response.json();
+      const responseText = await response.text();
+      try {
+        result = responseText ? JSON.parse(responseText) : {};
+      } catch {
+        // Web3Forms returned HTML (e.g. error page) instead of JSON
+        console.error('Web3Forms returned non-JSON response:', response.status, responseText.slice(0, 500));
+        return NextResponse.json(
+          {
+            error: 'Failed to submit form',
+            message: 'The form service returned an unexpected response. Please check your WEB3FORMS_ACCESS_KEY and try again, or contact the site owner.',
+          },
+          { status: 502 }
+        );
+      }
 
       if (!response.ok) {
         return NextResponse.json(
-          { 
+          {
             error: 'Failed to submit form',
-            message: result.message || 'An error occurred while submitting your message. Please try again later.'
+            message: result.message || 'An error occurred while submitting your message. Please try again later.',
           },
           { status: response.status }
         );
