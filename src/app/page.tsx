@@ -27,6 +27,18 @@ export default function Home() {
     loadConfig();
   }, []);
 
+  // Scroll to hash when navigating from another page (e.g. /blog or /projects) to /#about or /#contact
+  useEffect(() => {
+    if (loading) return; // Wait for config so About/Contact sections are in the DOM
+    const hash = typeof window !== 'undefined' ? window.location.hash.slice(1) : '';
+    if (!hash) return;
+    const el = document.getElementById(hash);
+    if (el) {
+      const t = setTimeout(() => el.scrollIntoView({ behavior: 'smooth' }), 100);
+      return () => clearTimeout(t);
+    }
+  }, [loading]);
+
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-white dark:bg-gray-900">

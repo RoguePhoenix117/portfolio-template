@@ -14,36 +14,36 @@ export default function ProjectsClient({ allProjects, featuredProjects }: Projec
   const otherProjects = allProjects.filter(project => !project.featured);
 
   return (
-    <section id="projects" className="py-20 bg-gray-50">
+    <section id="projects" className="py-20 bg-gray-50 dark:bg-gray-900">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Featured Projects */}
         {featuredProjects.length > 0 && (
           <div className="mb-16">
-            <h3 className="text-2xl font-bold text-gray-900 mb-8 text-center">Featured Projects</h3>
+            <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-8 text-center">Featured Projects</h3>
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
               {featuredProjects.map((project) => (
                 <div
                   key={project.id}
-                  className="bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 overflow-hidden"
+                  className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 overflow-hidden"
                 >
                   <div className="p-8">
                     <div className="flex items-center justify-between mb-4">
-                      <span className="px-3 py-1 bg-blue-100 text-blue-800 text-sm font-medium rounded-full">
+                      <span className="px-3 py-1 bg-blue-100 dark:bg-blue-900/40 text-blue-800 dark:text-blue-300 text-sm font-medium rounded-full">
                         {project.category}
                       </span>
-                      <span className="text-sm text-gray-500 flex items-center">
+                      <span className="text-sm text-gray-500 dark:text-gray-400 flex items-center">
                         <Calendar size={16} className="mr-1" />
                         {project.date.split('-')[0]}
                       </span>
                     </div>
                     
-                    <h3 className="text-2xl font-bold text-gray-900 mb-4 hover:text-blue-600 transition-colors duration-200">
+                    <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-4 hover:text-blue-600 dark:hover:text-blue-400 transition-colors duration-200">
                       <Link href={`/projects/${project.slug}`}>
                         {project.title}
                       </Link>
                     </h3>
                     
-                    <p className="text-gray-600 mb-6 leading-relaxed">
+                    <p className="text-gray-600 dark:text-gray-300 mb-6 leading-relaxed">
                       {project.excerpt}
                     </p>
                     
@@ -51,7 +51,7 @@ export default function ProjectsClient({ allProjects, featuredProjects }: Projec
                       {project.technologies.map((tech) => (
                         <span
                           key={tech}
-                          className="px-3 py-1 bg-gray-100 text-gray-700 text-sm rounded-full"
+                          className="px-3 py-1 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 text-sm rounded-full"
                         >
                           {tech}
                         </span>
@@ -65,7 +65,7 @@ export default function ProjectsClient({ allProjects, featuredProjects }: Projec
                             href={project.githubUrl}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="text-gray-400 hover:text-gray-600 transition-colors duration-200"
+                            className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors duration-200"
                             aria-label="GitHub"
                           >
                             <Github size={24} />
@@ -76,7 +76,7 @@ export default function ProjectsClient({ allProjects, featuredProjects }: Projec
                             href={project.liveUrl}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="text-gray-400 hover:text-blue-600 transition-colors duration-200"
+                            className="text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 transition-colors duration-200"
                             aria-label="Live Demo"
                           >
                             <ExternalLink size={24} />
@@ -85,7 +85,7 @@ export default function ProjectsClient({ allProjects, featuredProjects }: Projec
                       </div>
                       <Link
                         href={`/projects/${project.slug}`}
-                        className="inline-flex items-center text-blue-600 hover:text-blue-700 font-medium transition-colors duration-200"
+                        className="inline-flex items-center text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300 font-medium transition-colors duration-200"
                       >
                         View project
                         <ArrowRight size={16} className="ml-1" />
@@ -101,31 +101,31 @@ export default function ProjectsClient({ allProjects, featuredProjects }: Projec
         {/* Other Projects */}
         {otherProjects.length > 0 && (
           <div>
-            <h3 className="text-2xl font-bold text-gray-900 mb-8 text-center">Other Projects</h3>
+            <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-8 text-center">Other Projects</h3>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
               {otherProjects.map((project) => (
                 <div
                   key={project.id}
-                  className="bg-white rounded-xl shadow-md hover:shadow-lg transition-all duration-300 transform hover:-translate-y-1 overflow-hidden"
+                  className="bg-white dark:bg-gray-800 rounded-xl shadow-md hover:shadow-lg transition-all duration-300 transform hover:-translate-y-1 overflow-hidden"
                 >
                   <div className="p-6">
                     <div className="flex items-center justify-between mb-4">
-                      <span className="px-3 py-1 bg-gray-100 text-gray-700 text-sm font-medium rounded-full">
+                      <span className="px-3 py-1 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 text-sm font-medium rounded-full">
                         {project.category}
                       </span>
-                      <span className="text-sm text-gray-500 flex items-center">
+                      <span className="text-sm text-gray-500 dark:text-gray-400 flex items-center">
                         <Calendar size={16} className="mr-1" />
                         {new Date(project.date).getFullYear()}
                       </span>
                     </div>
                     
-                    <h3 className="text-xl font-bold text-gray-900 mb-3 hover:text-blue-600 transition-colors duration-200">
+                    <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-3 hover:text-blue-600 dark:hover:text-blue-400 transition-colors duration-200">
                       <Link href={`/projects/${project.slug}`}>
                         {project.title}
                       </Link>
                     </h3>
                     
-                    <p className="text-gray-600 mb-4 line-clamp-3">
+                    <p className="text-gray-600 dark:text-gray-300 mb-4 line-clamp-3">
                       {project.excerpt}
                     </p>
                     
@@ -133,13 +133,13 @@ export default function ProjectsClient({ allProjects, featuredProjects }: Projec
                       {project.technologies.slice(0, 3).map((tech) => (
                         <span
                           key={tech}
-                          className="px-2 py-1 bg-gray-100 text-gray-700 text-xs rounded-full"
+                          className="px-2 py-1 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 text-xs rounded-full"
                         >
                           {tech}
                         </span>
                       ))}
                       {project.technologies.length > 3 && (
-                        <span className="px-2 py-1 bg-gray-100 text-gray-700 text-xs rounded-full">
+                        <span className="px-2 py-1 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 text-xs rounded-full">
                           +{project.technologies.length - 3} more
                         </span>
                       )}
@@ -152,7 +152,7 @@ export default function ProjectsClient({ allProjects, featuredProjects }: Projec
                             href={project.githubUrl}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="text-gray-400 hover:text-gray-600 transition-colors duration-200"
+                            className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors duration-200"
                             aria-label="GitHub"
                           >
                             <Github size={20} />
@@ -163,7 +163,7 @@ export default function ProjectsClient({ allProjects, featuredProjects }: Projec
                             href={project.liveUrl}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="text-gray-400 hover:text-blue-600 transition-colors duration-200"
+                            className="text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 transition-colors duration-200"
                             aria-label="Live Demo"
                           >
                             <ExternalLink size={20} />
@@ -172,7 +172,7 @@ export default function ProjectsClient({ allProjects, featuredProjects }: Projec
                       </div>
                       <Link
                         href={`/projects/${project.slug}`}
-                        className="inline-flex items-center text-blue-600 hover:text-blue-700 font-medium text-sm transition-colors duration-200"
+                        className="inline-flex items-center text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300 font-medium text-sm transition-colors duration-200"
                       >
                         View project
                         <ArrowRight size={14} className="ml-1" />
@@ -188,11 +188,11 @@ export default function ProjectsClient({ allProjects, featuredProjects }: Projec
         {/* No Projects Message */}
         {allProjects.length === 0 && (
           <div className="text-center py-12">
-            <div className="w-24 h-24 bg-gray-200 rounded-full flex items-center justify-center mx-auto mb-6">
+            <div className="w-24 h-24 bg-gray-200 dark:bg-gray-700 rounded-full flex items-center justify-center mx-auto mb-6">
               <span className="text-4xl">💼</span>
             </div>
-            <h3 className="text-xl font-semibold text-gray-900 mb-2">No Projects Yet</h3>
-            <p className="text-gray-600">
+            <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">No Projects Yet</h3>
+            <p className="text-gray-600 dark:text-gray-400">
               Projects will appear here once you add them to the content/projects directory.
             </p>
           </div>

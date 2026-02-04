@@ -137,8 +137,8 @@
     }
   },
   "features": {
-    "enableBlog": false,
-    "enableProjects": false,
+    "enableBlog": true,
+    "enableProjects": true,
     "enableAbout": true,
     "enableContact": true,
     "enableStudio": false
