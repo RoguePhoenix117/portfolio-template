@@ -1,7 +1,8 @@
 'use client';
 
 import { Project } from '@/lib/projects';
-import { Calendar, ExternalLink, Github } from 'lucide-react';
+import { ArrowRight, Calendar, ExternalLink, Github } from 'lucide-react';
+import Link from 'next/link';
 
 interface ProjectsClientProps {
   allProjects: Project[];
@@ -36,8 +37,10 @@ export default function ProjectsClient({ allProjects, featuredProjects }: Projec
                       </span>
                     </div>
                     
-                    <h3 className="text-2xl font-bold text-gray-900 mb-4">
-                      {project.title}
+                    <h3 className="text-2xl font-bold text-gray-900 mb-4 hover:text-blue-600 transition-colors duration-200">
+                      <Link href={`/projects/${project.slug}`}>
+                        {project.title}
+                      </Link>
                     </h3>
                     
                     <p className="text-gray-600 mb-6 leading-relaxed">
@@ -57,25 +60,36 @@ export default function ProjectsClient({ allProjects, featuredProjects }: Projec
                     
                     <div className="flex items-center justify-between">
                       <div className="flex space-x-4">
-                        <a
-                          href={project.githubUrl}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="text-gray-400 hover:text-gray-600 transition-colors duration-200"
-                          aria-label="GitHub"
-                        >
-                          <Github size={24} />
-                        </a>
-                        <a
-                          href={project.liveUrl}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="text-gray-400 hover:text-blue-600 transition-colors duration-200"
-                          aria-label="Live Demo"
-                        >
-                          <ExternalLink size={24} />
-                        </a>
+                        {project.githubUrl && (
+                          <a
+                            href={project.githubUrl}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="text-gray-400 hover:text-gray-600 transition-colors duration-200"
+                            aria-label="GitHub"
+                          >
+                            <Github size={24} />
+                          </a>
+                        )}
+                        {project.liveUrl && (
+                          <a
+                            href={project.liveUrl}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="text-gray-400 hover:text-blue-600 transition-colors duration-200"
+                            aria-label="Live Demo"
+                          >
+                            <ExternalLink size={24} />
+                          </a>
+                        )}
                       </div>
+                      <Link
+                        href={`/projects/${project.slug}`}
+                        className="inline-flex items-center text-blue-600 hover:text-blue-700 font-medium transition-colors duration-200"
+                      >
+                        View project
+                        <ArrowRight size={16} className="ml-1" />
+                      </Link>
                     </div>
                   </div>
                 </div>
@@ -105,8 +119,10 @@ export default function ProjectsClient({ allProjects, featuredProjects }: Projec
                       </span>
                     </div>
                     
-                    <h3 className="text-xl font-bold text-gray-900 mb-3">
-                      {project.title}
+                    <h3 className="text-xl font-bold text-gray-900 mb-3 hover:text-blue-600 transition-colors duration-200">
+                      <Link href={`/projects/${project.slug}`}>
+                        {project.title}
+                      </Link>
                     </h3>
                     
                     <p className="text-gray-600 mb-4 line-clamp-3">
@@ -131,25 +147,36 @@ export default function ProjectsClient({ allProjects, featuredProjects }: Projec
                     
                     <div className="flex items-center justify-between">
                       <div className="flex space-x-3">
-                        <a
-                          href={project.githubUrl}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="text-gray-400 hover:text-gray-600 transition-colors duration-200"
-                          aria-label="GitHub"
-                        >
-                          <Github size={20} />
-                        </a>
-                        <a
-                          href={project.liveUrl}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="text-gray-400 hover:text-blue-600 transition-colors duration-200"
-                          aria-label="Live Demo"
-                        >
-                          <ExternalLink size={20} />
-                        </a>
+                        {project.githubUrl && (
+                          <a
+                            href={project.githubUrl}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="text-gray-400 hover:text-gray-600 transition-colors duration-200"
+                            aria-label="GitHub"
+                          >
+                            <Github size={20} />
+                          </a>
+                        )}
+                        {project.liveUrl && (
+                          <a
+                            href={project.liveUrl}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="text-gray-400 hover:text-blue-600 transition-colors duration-200"
+                            aria-label="Live Demo"
+                          >
+                            <ExternalLink size={20} />
+                          </a>
+                        )}
                       </div>
+                      <Link
+                        href={`/projects/${project.slug}`}
+                        className="inline-flex items-center text-blue-600 hover:text-blue-700 font-medium text-sm transition-colors duration-200"
+                      >
+                        View project
+                        <ArrowRight size={14} className="ml-1" />
+                      </Link>
                     </div>
                   </div>
                 </div>
