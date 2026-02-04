@@ -97,13 +97,12 @@ export async function POST(request: NextRequest) {
     let result: any;
 
     if (provider === 'web3forms') {
-      // Prefer server-side env var; fallback to NEXT_PUBLIC_ for backward compatibility
-      const web3formsAccessKey =
-        process.env.WEB3FORMS_ACCESS_KEY || process.env.NEXT_PUBLIC_WEB3FORMS_ACCESS_KEY;
+      // Use server-only env var so the key is never exposed to the client
+      const web3formsAccessKey = process.env.WEB3FORMS_ACCESS_KEY;
 
       if (!web3formsAccessKey) {
         return NextResponse.json(
-          { error: 'Web3Forms access key not configured', message: 'Please configure WEB3FORMS_ACCESS_KEY (or NEXT_PUBLIC_WEB3FORMS_ACCESS_KEY) in your environment. See CONTACT_FORM_SETUP.md for instructions.' },
+          { error: 'Web3Forms access key not configured', message: 'Please set WEB3FORMS_ACCESS_KEY in your environment (.env.local). See CONTACT_FORM_SETUP.md for instructions.' },
           { status: 500 }
         );
       }
