@@ -33,7 +33,7 @@ export default function ProjectsClient({ allProjects, featuredProjects }: Projec
                       </span>
                       <span className="text-sm text-gray-500 flex items-center">
                         <Calendar size={16} className="mr-1" />
-                        {new Date(project.date).getFullYear()}
+                        {project.date.split('-')[0]}
                       </span>
                     </div>
                     

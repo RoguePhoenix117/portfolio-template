@@ -42,8 +42,8 @@ function transformProject(project: any): Project {
     : project.image?.asset?.url || '/placeholder.jpg';
   
   return {
-    id: project._id || project.slug?.current || '',
-    slug: project.slug?.current || '',
+    id: project._id || (typeof project.slug === 'string' ? project.slug : project.slug?.current) || '',
+    slug: typeof project.slug === 'string' ? project.slug : (project.slug?.current ?? ''),
     title: project.title || '',
     description: project.description || '',
     excerpt: project.excerpt || '',
