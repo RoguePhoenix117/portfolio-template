@@ -8,6 +8,10 @@ import { useEffect, useRef, useState } from 'react';
 
 // Web3Forms free tier hCaptcha site key (see https://docs.web3forms.com/getting-started/customizations/spam-protection/hcaptcha)
 const HCAPTCHA_SITEKEY = '50b2fe65-b00b-4b9e-ad62-3ba471098be2';
+const WEB3FORMS_API = 'https://api.web3forms.com/submit';
+
+// Submit directly from the client to avoid Cloudflare blocking server-side requests (403 "Just a moment...").
+// The access key is exposed in the client bundle but only allows form submissions to your form.
 
 export default function Contact() {
   const [config, setConfig] = useState<UserConfig | null>(null);
@@ -71,34 +75,54 @@ export default function Contact() {
     setErrorMessage('');
 
     try {
-      const payload: Record<string, unknown> = {
-        name: formData.name,
-        email: formData.email,
-        subject: formData.subject,
-        message: formData.message,
-        provider,
-      };
+      let response: Response;
+      let result: { success?: boolean; message?: string };
 
       if (provider === 'web3forms') {
-        payload['h-captcha-response'] = hCaptchaToken;
-      } else if (provider === 'generic') {
-        payload.genericApiEndpoint = config?.contactForm?.genericApiEndpoint;
-        payload.genericApiHeaders = config?.contactForm?.genericApiHeaders;
+        const accessKey = process.env.NEXT_PUBLIC_WEB3FORMS_ACCESS_KEY;
+        if (!accessKey) {
+          setSubmitStatus('error');
+          setErrorMessage('Web3Forms is not configured. Add NEXT_PUBLIC_WEB3FORMS_ACCESS_KEY to your environment.');
+          setIsSubmitting(false);
+          return;
+        }
+        response = await fetch(WEB3FORMS_API, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+          body: JSON.stringify({
+            access_key: accessKey,
+            name: formData.name,
+            email: formData.email,
+            subject: formData.subject,
+            message: formData.message,
+            from_name: formData.name,
+            botcheck: false,
+            'h-captcha-response': hCaptchaToken,
+          }),
+        });
+        result = await response.json().catch(() => ({}));
+      } else {
+        const payload: Record<string, unknown> = {
+          name: formData.name,
+          email: formData.email,
+          subject: formData.subject,
+          message: formData.message,
+          provider,
+          genericApiEndpoint: config?.contactForm?.genericApiEndpoint,
+          genericApiHeaders: config?.contactForm?.genericApiHeaders,
+        };
+        response = await fetch('/api/contact', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload),
+        });
+        result = await response.json();
       }
 
-      const response = await fetch('/api/contact', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(payload),
-      });
-
-      const result = await response.json();
-
-      if (!response.ok) {
+      const ok = response.ok && (provider !== 'web3forms' || result?.success !== false);
+      if (!ok) {
         setSubmitStatus('error');
-        setErrorMessage(result.message || 'Failed to send message. Please try again.');
+        setErrorMessage(result?.message || 'Failed to send message. Please try again.');
       } else {
         setSubmitStatus('success');
         setFormData({ name: '', email: '', subject: '', message: '', botcheck: false });
