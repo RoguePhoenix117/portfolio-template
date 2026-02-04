@@ -5,9 +5,12 @@ import { UserConfig } from '@/lib/types';
 import { ArrowDown, Download } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
+const HERO_IMAGE_PATH = '/hero.png';
+
 export default function Hero() {
   const [config, setConfig] = useState<UserConfig | null>(null);
   const [loading, setLoading] = useState(true);
+  const [heroImageLoaded, setHeroImageLoaded] = useState(false);
 
   useEffect(() => {
     const loadConfig = async () => {
@@ -57,10 +60,21 @@ export default function Hero() {
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         <div className="text-center">
-          {/* Profile Image Placeholder */}
+          {/* Profile picture or initials fallback */}
           <div className="mb-8 flex justify-center">
-            <div className="w-32 h-32 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center text-white text-4xl font-bold shadow-2xl">
-              {config.personal.initials}
+            <div className="relative w-32 h-32 rounded-full overflow-hidden shadow-2xl bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center">
+              <img
+                src={HERO_IMAGE_PATH}
+                alt=""
+                className={`absolute inset-0 w-full h-full object-cover ${heroImageLoaded ? 'opacity-100' : 'opacity-0'}`}
+                onLoad={() => setHeroImageLoaded(true)}
+                onError={() => setHeroImageLoaded(false)}
+              />
+              {!heroImageLoaded && (
+                <span className="text-white text-4xl font-bold select-none" aria-hidden>
+                  {config.personal.initials}
+                </span>
+              )}
             </div>
           </div>
 
